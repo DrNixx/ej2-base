@@ -37,9 +37,6 @@
 	"main": "./src/index.js",
 	"module": "./index.js",
 	"readme": "ReadMe.md",
-	"bin": {
-		"syncfusion-license": "bin/syncfusion-license.js"
-	},
 	"dependencies": {
 		"@syncfusion/ej2-icons": "*"
 	},
