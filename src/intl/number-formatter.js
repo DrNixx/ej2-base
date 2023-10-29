@@ -110,7 +110,7 @@ var NumberFormat = /** @class */ (function () {
             else if (!isFinite(value)) {
                 return symbols[mapper[0]];
             }
-            return _this.intNumberFormatter(value, cOptions, dOptions);
+            return _this.intNumberFormatter(value, cOptions, dOptions, option);
         };
     };
     /**
@@ -194,7 +194,7 @@ var NumberFormat = /** @class */ (function () {
      * @param {CommonOptions} dOptions ?
      * @returns {string} ?
      */
-    NumberFormat.intNumberFormatter = function (value, fOptions, dOptions) {
+    NumberFormat.intNumberFormatter = function (value, fOptions, dOptions, option) {
         var curData;
         if (isUndefined(fOptions.nData.type)) {
             return undefined;
@@ -218,9 +218,24 @@ var NumberFormat = /** @class */ (function () {
                 fValue = this.processSignificantDigits(value, curData.minimumSignificantDigits, curData.maximumSignificantDigits);
             }
             else {
-                fValue = this.processFraction(value, curData.minimumFractionDigits, curData.maximumFractionDigits);
+                fValue = this.processFraction(value, curData.minimumFractionDigits, curData.maximumFractionDigits, option);
                 if (curData.minimumIntegerDigits) {
                     fValue = this.processMinimumIntegers(fValue, curData.minimumIntegerDigits);
+                }
+                if (dOptions.isCustomFormat && curData.minimumFractionDigits < curData.maximumFractionDigits
+                    && /\d+\.\d+/.test(fValue)) {
+                    var temp = fValue.split('.');
+                    var decimalPart = temp[1];
+                    var len = decimalPart.length;
+                    for (var i = len - 1; i >= 0; i--) {
+                        if (decimalPart["" + i] === '0' && i >= curData.minimumFractionDigits) {
+                            decimalPart = decimalPart.slice(0, i);
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    fValue = temp[0] + '.' + decimalPart;
                 }
             }
             if (curData.type === 'scientific') {
@@ -228,6 +243,7 @@ var NumberFormat = /** @class */ (function () {
                 fValue = fValue.replace('e', dOptions.numberMapper.numberSymbols[mapper[4]]);
             }
             fValue = fValue.replace('.', dOptions.numberMapper.numberSymbols[mapper[3]]);
+            fValue = curData.format === "#,###,,;(#,###,,)" ? this.customPivotFormat(parseInt(fValue)) : fValue;
             if (curData.useGrouping) {
                 /* eslint-disable  @typescript-eslint/no-explicit-any */
                 fValue = this.groupNumbers(fValue, curData.groupData.primary, curData.groupSeparator || ',', dOptions.numberMapper.numberSymbols[mapper[3]] || '.', curData.groupData.secondary);
@@ -237,6 +253,9 @@ var NumberFormat = /** @class */ (function () {
                 return curData.nlead;
             }
             else {
+                if (fValue === '0' && option && option.format === '0') {
+                    return fValue + curData.nend;
+                }
                 return curData.nlead + fValue + curData.nend;
             }
         }
@@ -298,7 +317,7 @@ var NumberFormat = /** @class */ (function () {
      * @param {number} max ?
      * @returns {string} ?
      */
-    NumberFormat.processFraction = function (value, min, max) {
+    NumberFormat.processFraction = function (value, min, max, option) {
         var temp = (value + '').split('.')[1];
         var length = temp ? temp.length : 0;
         if (min && length < min) {
@@ -318,7 +337,11 @@ var NumberFormat = /** @class */ (function () {
         else if (!isNullOrUndefined(max) && (length > max || max === 0)) {
             return value.toFixed(max);
         }
-        return value + '';
+        var str = value + '';
+        if (str[0] === '0' && option && option.format === '###.00') {
+            str = str.slice(1);
+        }
+        return str;
     };
     /**
      * Returns integer processed numeric string
@@ -338,6 +361,21 @@ var NumberFormat = /** @class */ (function () {
             temp[0] = lead;
         }
         return temp.join('.');
+    };
+    /**
+     * Returns custom format for pivot table
+     *
+     * @param {number} value ?
+     */
+    NumberFormat.customPivotFormat = function (value) {
+        if (value >= 500000) {
+            value /= 1000000;
+            var _a = value.toString().split("."), integer = _a[0], decimal = _a[1];
+            return decimal && +decimal.substring(0, 1) >= 5
+                ? Math.ceil(value).toString()
+                : Math.floor(value).toString();
+        }
+        return "";
     };
     return NumberFormat;
 }());

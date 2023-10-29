@@ -47,6 +47,7 @@ export function createElement(tagName, properties) {
  */
 export function addClass(elements, classes) {
     var classList = getClassList(classes);
+    var regExp = RegExp;
     for (var _i = 0, _a = elements; _i < _a.length; _i++) {
         var ele = _a[_i];
         for (var _b = 0, classList_1 = classList; _b < classList_1.length; _b++) {
@@ -56,7 +57,7 @@ export function addClass(elements, classes) {
                 if (isNullOrUndefined(curClass)) {
                     setValue('attributes.className', className, ele);
                 }
-                else if (!new RegExp('\\b' + className + '\\b', 'i').test(curClass)) {
+                else if (!new regExp('\\b' + className + '\\b', 'i').test(curClass)) {
                     setValue('attributes.className', curClass + ' ' + className, ele);
                 }
             }
@@ -163,9 +164,16 @@ export function prepend(fromElements, toElement, isEval) {
  */
 export function append(fromElements, toElement, isEval) {
     var docFrag = document.createDocumentFragment();
-    for (var _i = 0, _a = fromElements; _i < _a.length; _i++) {
-        var ele = _a[_i];
-        docFrag.appendChild(ele);
+    if (fromElements instanceof NodeList) {
+        while (fromElements.length > 0) {
+            docFrag.appendChild(fromElements[0]);
+        }
+    }
+    else {
+        for (var _i = 0, _a = fromElements; _i < _a.length; _i++) {
+            var ele = _a[_i];
+            docFrag.appendChild(ele);
+        }
     }
     toElement.appendChild(docFrag);
     if (isEval) {

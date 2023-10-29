@@ -2,6 +2,141 @@
 
 ## [Unreleased]
 
+### Common
+
+#### Bug Fixes
+
+- The issue with the "Tooltip component displays empty string when setting content as '${}'" has been resolved.
+- `#I495294` - The issue with content sanitization in the tooltip component has been resolved
+- `#I504425` - Issue with date parser designator conversion has been fixed.
+- `#I503487` - The issue with the "action failure event argument is not displayed with full error details" has been resolved.
+
+## 23.1.38 (2023-09-26)
+
+### Common
+
+#### Bug Fixes
+
+- `#I493496` - Up loader file name with special character issue has been fixed.
+
+## 23.1.36 (2023-09-15)
+
+### Common
+
+#### New Features
+
+- `#F155731` - Provided an option to enable or disable the animation across all Syncfusion components.
+
+#### Bug Fixes
+
+- Resolved the issue with offline material theme have google fonts.
+
+## 22.2.10 (2023-08-22)
+
+### Common
+
+#### Bug Fixes
+
+- `#492390` - Resolved the issue with Bold fonts are not included in material theme
+
+## 22.2.9 (2023-08-15)
+
+### Common
+
+#### Bug Fixes
+
+- `#I476890` - Memory leak issue in syncfusion components when using enable Persistence.
+
+## 22.2.5 (2023-07-27)
+
+### Common
+
+#### Bug Fixes
+
+- `#479520` - The issue with dragged elements and mouse positions getting misaligned has been resolved.
+
+## 22.1.38 (2023-07-11)
+
+### Common
+
+#### New Features
+
+- Added UTM parameters.
+
+## 22.1.34 (2023-06-21)
+
+### Common
+
+#### New Features
+
+- Provided the TypeScript 5 compatible support for the EJ2 components.
+
+## 21.2.9 (2023-06-06)
+
+### Common
+
+#### Bug Fixes
+
+- `#I461547` - The issue with the "popup showing on the entire page in the Chrome browser on iPad devices" has been resolved.
+
+## 21.1.35 (2023-05-9)
+
+### Common
+
+#### Bug Fixes
+
+- `#I451675` - The issue in the `template engine` when using `boolean` value has been resolved.
+
+## 21.2.3 (2023-05-03)
+
+### Common
+
+#### Bug Fixes
+
+- `#F180652` - The issue with the "drag element top value changes after scrolling to browser end" has been resolved.
+
+## 21.1.39 (2023-04-11)
+
+### Common
+
+#### Bug Fixes
+
+- `#I445928` - The issue with the "`formatNumber` method on internationalization" has been resolved.
+
+## 21.1.38 (2023-04-04)
+
+### Common
+
+#### Bug Fixes
+
+- `#I440657` - The issue with "Unwanted element is added in `Vue 3` template element" has been resolved.
+
+## 21.1.37 (2023-03-29)
+
+### Common
+
+#### Bug Fixes
+
+- `#F41815` - Resolved the dragged `card` element and mouse position mismatch issue in `kanban`.
+
+## 21.1.35 (2023-03-23)
+
+### Common
+
+#### Bug Fixes
+
+- `#I435907` - The issue with the "`drag and drop` on the `ipad` device" has been resolved.
+
+## 20.4.51 (2023-02-21)
+
+### Common
+
+#### New Features
+
+- `#I421132` - Provided custom format `#,###,, ; (#,###,,)` support for `Numbers` that used in Microsoft Excel's pivot table.
+
+## 20.4.48 (2023-02-01)
+
 ### Dashboard Layout
 
 #### Bug Fixes

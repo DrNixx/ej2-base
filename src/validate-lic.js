@@ -1,6 +1,4 @@
-import { createElement } from './dom';
-import { getValue, containerObject, setValue, isNullOrUndefined } from './util';
-export var componentList = ['grid', 'pivotview', 'treegrid', 'spreadsheet', 'rangeNavigator', 'DocumentEditor', 'listbox', 'PdfViewer', 'richtexteditor', 'DashboardLayout', 'chart', 'stockChart', 'circulargauge', 'diagram', 'heatmap', 'lineargauge', 'maps', 'smithchart', 'barcode', 'sparkline', 'treemap', 'bulletChart', 'kanban', 'daterangepicker', 'schedule', 'gantt', 'signature', 'query-builder', 'drop-down-tree', 'carousel', 'filemanager', 'uploader', 'accordion', 'tab', 'treeview'];
+export var componentList = ['grid', 'pivotview', 'treegrid', 'spreadsheet', 'rangeNavigator', 'DocumentEditor', 'listbox', 'inplaceeditor', 'PdfViewer', 'richtexteditor', 'DashboardLayout', 'chart', 'stockChart', 'circulargauge', 'diagram', 'heatmap', 'lineargauge', 'maps', 'slider', 'smithchart', 'barcode', 'sparkline', 'treemap', 'bulletChart', 'kanban', 'daterangepicker', 'schedule', 'gantt', 'signature', 'query-builder', 'drop-down-tree', 'carousel', 'filemanager', 'uploader', 'accordion', 'tab', 'treeview'];
 
 /**
  * License validation module
@@ -11,8 +9,8 @@ var LicenseValidator = /** @class */ (function () {
     function LicenseValidator(key) {
         this.isValidated = false;
         this.isLicensed = true;
-        this.version = '20.4';
-        this.platform = /JavaScript|ASPNET|ASPNETCORE|ASPNETMVC|FileFormats/i;
+        this.version = '23';
+        this.platform = /JavaScript|ASPNET|ASPNETCORE|ASPNETMVC|FileFormats|essentialstudio/i;
         /**
          * To manage licensing operation.
          */
@@ -75,25 +73,11 @@ var LicenseValidator = /** @class */ (function () {
      * @returns {IValidator} - Get license information from key.
      */
     LicenseValidator.prototype.getInfoFromKey = function () {
-        return null; 
+        return null;
     };
     return LicenseValidator;
 }());
 var licenseValidator = new LicenseValidator();
-/**
- * Converts the given number to characters.
- *
- * @param {number} cArr - Specifies the license key as number.
- * @returns {string}
- */
-function convertToChar(cArr) {
-    var ret = '';
-    for (var _i = 0, cArr_1 = cArr; _i < cArr_1.length; _i++) {
-        var arr = cArr_1[_i];
-        ret += String.fromCharCode(arr);
-    }
-    return ret;
-}
 /**
  * To set license key.
  *

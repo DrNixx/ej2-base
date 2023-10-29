@@ -77,7 +77,8 @@ var ParserBase = /** @class */ (function () {
         var regexStr = props.map(function (str) {
             return str.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1');
         }).join('|');
-        return new RegExp(regexStr, 'g');
+        var regExp = RegExp;
+        return new regExp(regexStr, 'g');
     };
     /**
      *
@@ -155,7 +156,8 @@ var ParserBase = /** @class */ (function () {
             var digits = blazorMode ? getValue('obj.mapperDigits', cur) : getValue(cur.nSystem + '._digits', numberSystem);
             if (!isUndefined(digits)) {
                 ret.numericPair = this.reverseObject(digits, latnNumberSystem);
-                ret.numberParseRegex = new RegExp(this.constructRegex(digits), 'g');
+                var regExp = RegExp;
+                ret.numberParseRegex = new regExp(this.constructRegex(digits), 'g');
                 ret.numericRegex = '[' + digits[0] + '-' + digits[9] + ']';
                 if (needSymbols) {
                     ret.numericRegex = digits[0] + '-' + digits[9];
@@ -212,28 +214,28 @@ var blazorCurrencyData = {
     'XAF': 'FCFA',
     'GHS': 'GH₵',
     'XDR': 'XDR',
-    'AED': 'د.إ.‏',
-    'BHD': 'د.ب.‏',
-    'DZD': 'د.ج.‏',
-    'EGP': 'ج.م.‏',
+    'AED': 'د.إ.',
+    'BHD': 'د.ب.',
+    'DZD': 'د.ج.',
+    'EGP': 'ج.م.',
     'ILS': '₪',
-    'IQD': 'د.ع.‏',
-    'JOD': 'د.ا.‏',
+    'IQD': 'د.ع.',
+    'JOD': 'د.ا.',
     'KMF': 'CF',
-    'KWD': 'د.ك.‏',
-    'LBP': 'ل.ل.‏',
-    'LYD': 'د.ل.‏',
-    'MAD': 'د.م.‏',
+    'KWD': 'د.ك.',
+    'LBP': 'ل.ل.',
+    'LYD': 'د.ل.',
+    'MAD': 'د.م.',
     'MRU': 'أ.م.',
-    'OMR': 'ر.ع.‏',
-    'QAR': 'ر.ق.‏',
-    'SAR': 'ر.س.‏',
+    'OMR': 'ر.ع.',
+    'QAR': 'ر.ق.',
+    'SAR': 'ر.س.',
     'SDG': 'ج.س.',
     'SOS': 'S',
     'SSP': '£',
-    'SYP': 'ل.س.‏',
-    'TND': 'د.ت.‏',
-    'YER': 'ر.ي.‏',
+    'SYP': 'ل.س.',
+    'TND': 'د.ت.',
+    'YER': 'ر.ي.',
     'CLP': '$',
     'INR': '₹',
     'TZS': 'TSh',

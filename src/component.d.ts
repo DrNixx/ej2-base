@@ -82,6 +82,18 @@ export declare abstract class Component<ElementType extends HTMLElement> extends
      */
     getLocalData(): any;
     /**
+     * Adding unload event to persist data when enable persistence true
+     */
+    attachUnloadEvent(): any;
+    /**
+     * Handling unload event to persist data when enable persistence true
+     */
+    handleUnload(): any;
+    /**
+     * Removing unload event to persist data when enable persistence true
+     */
+    detachUnloadEvent(): any;
+    /**
      * Appends the control within the given HTML element
      *
      * @param {string | HTMLElement} selector - Target element where control needs to be appended

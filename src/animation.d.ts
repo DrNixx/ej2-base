@@ -199,11 +199,28 @@ export declare function enableRipple(isRipple: boolean): boolean;
  *
  * @private
  */
-export declare let animationMode: string;
+export declare let animationMode: string | GlobalAnimationMode;
 /**
- * Method for set the Global animation modes for Syncfusion Blazor components.
+ * This method is used to enable or disable the animation for all components.
  *
- * @param {string} value - Specifies the animation mode.
+ * @param {string|GlobalAnimationMode} value - Specifies the value to enable or disable the animation for all components. When set to 'enable', it enables the animation for all components, regardless of the individual component's animation settings. When set to 'disable', it disables the animation for all components, regardless of the individual component's animation settings.
  * @returns {void}
  */
-export declare function setGlobalAnimation(value: string): void;
+export declare function setGlobalAnimation(value: string | GlobalAnimationMode): void;
+/**
+ * Defines the global animation modes for all components.
+ */
+export declare enum GlobalAnimationMode {
+    /**
+    * Defines the global animation mode as Default. Animation is enabled or disabled based on the component's animation settings.
+    */
+    Default = "Default",
+    /**
+    * Defines the global animation mode as Enable. Enables the animation for all components, regardless of the individual component's animation settings.
+    */
+    Enable = "Enable",
+    /**
+    * Defines the global animation mode as Disable. Disables the animation for all components, regardless of the individual component's animation settings.
+    */
+    Disable = "Disable"
+}

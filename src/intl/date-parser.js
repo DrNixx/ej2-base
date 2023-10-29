@@ -192,7 +192,8 @@ var DateParser = /** @class */ (function () {
                     parseOptions.evalposition["" + charKey] = { isNumber: isNumber, pos: i + 1 + gmtCorrection, hourOnly: hourOnly };
                 }
                 if (i === length_1 - 1 && !isNullOrUndefined(regexString)) {
-                    parseOptions.parserRegex = new RegExp('^' + regexString + '$', 'i');
+                    var regExp = RegExp;
+                    parseOptions.parserRegex = new regExp('^' + regexString + '$', 'i');
                 }
             }
         }
@@ -340,6 +341,7 @@ var DateParser = /** @class */ (function () {
                         // eslint-disable-next-line
                         matchString = ((prop === 'month') && (!parseOptions.isIslamic) && (parseOptions.culture === 'en' || parseOptions.culture === 'en-GB' || parseOptions.culture === 'en-US'))
                             ? matchString[0].toUpperCase() + matchString.substring(1).toLowerCase() : matchString;
+                        matchString = ((prop !== 'month') && (prop === 'designator') && parseOptions.culture === 'en-GB') ? matchString.toLowerCase() : matchString;
                         // eslint-disable-next-line
                         retOptions[prop] = parseOptions[prop][matchString];
                     }

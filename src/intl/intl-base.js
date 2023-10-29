@@ -4,6 +4,7 @@ import { ParserBase as parser, getBlazorCurrencySymbol } from './parser-base';
 import { DateFormat } from './date-formatter';
 import { NumberFormat } from './number-formatter';
 import { isUndefined } from '../util';
+var regExp = RegExp;
 export var blazorCultureFormats = {
     'en-US': {
         'd': 'M/d/y',
@@ -31,7 +32,8 @@ export var blazorCultureFormats = {
 // eslint-disable-next-line
 export var IntlBase;
 (function (IntlBase) {
-    // tslint:disable-next-line:max-line-length
+    /* eslint-disable */
+    // tslint:disable-next-line:max-line-length.
     IntlBase.negativeDataRegex = /^(('[^']+'|''|[^*#@0,.E])*)(\*.)?((([#,]*[0,]*0+)(\.0*[0-9]*#*)?)|([#,]*@+#*))(E\+?0+)?(('[^']+'|''|[^*#@0,.E])*)$/;
     IntlBase.customRegex = /^(('[^']+'|''|[^*#@0,.])*)(\*.)?((([0#,]*[0,]*[0#]*[0#\ ]*)(\.[0#]*)?)|([#,]*@+#*))(E\+?0+)?(('[^']+'|''|[^*#@0,.E])*)$/;
     IntlBase.latnParseRegex = /0|1|2|3|4|5|6|7|8|9/g;
@@ -64,8 +66,8 @@ export var IntlBase;
         'fri': 5,
         'sat': 6
     };
-    IntlBase.formatRegex = /(^[ncpae]{1})([0-1]?[0-9]|20)?$/i;
-    IntlBase.currencyFormatRegex = /(^[ca]{1})([0-1]?[0-9]|20)?$/i;
+    IntlBase.formatRegex = new regExp("(^[ncpae]{1})([0-1]?[0-9]|20)?$", "i");
+    IntlBase.currencyFormatRegex = new regExp("(^[ca]{1})([0-1]?[0-9]|20)?$", "i");
     IntlBase.curWithoutNumberRegex = /(c|a)$/ig;
     var typeMapper = {
         '$': 'isCurrency',
@@ -906,6 +908,7 @@ export var IntlBase;
             }
         }
         if (!isNullOrUndefined(dOptions)) {
+            dOptions.isCustomFormat = true;
             extend(cOptions, isCurrencyPercent([cOptions.nlead, cOptions.nend], '$', dOptions.currencySymbol));
             if (!cOptions.isCurrency) {
                 extend(cOptions, isCurrencyPercent([cOptions.nlead, cOptions.nend], '%', dOptions.percentSymbol));

@@ -17,7 +17,7 @@ export function getRandomId() {
 /**
  * Compile the template string into template function.
  *
- * @param {string} templateString - The template string which is going to convert.
+ * @param {string | Function} templateString - The template string which is going to convert.
  * @param {Object} helper - Helper functions as an object.
  * @param {boolean} ignorePrefix ?
  * @returns {NodeList} ?
@@ -144,6 +144,26 @@ export function setTemplateEngine(classObj) {
  */
 export function getTemplateEngine() {
     return engineObj.compile;
+}
+/**
+ * Set the current template function to support Content Security Policy.
+ *
+ * @param {Function} template - The template function that is going to render.
+ * @param {any} helper - The data utilized by the template from the helper.
+ * @returns {Function} ?
+ * @private
+ */
+export function initializeCSPTemplate(template, helper) {
+    var boundFunc;
+    template.prototype.CSPTemplate = true;
+    if (!isNullOrUndefined(helper)) {
+        boundFunc = template.bind(helper);
+        boundFunc.prototype = Object.create(template.prototype);
+    }
+    else {
+        boundFunc = template;
+    }
+    return boundFunc;
 }
 //Default Engine Class
 var Engine = /** @class */ (function () {

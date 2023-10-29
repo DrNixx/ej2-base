@@ -114,6 +114,16 @@ var Browser = /** @class */ (function () {
         return Browser.getEvent('cancel');
     };
     /**
+     * Check whether the browser on the iPad device is Safari or not
+     *
+     * @returns {boolean}
+     */
+    Browser.isSafari = function () {
+        return (Browser.isDevice && Browser.isIos && Browser.isTouch && typeof window !== 'undefined'
+            && window.navigator.userAgent.toLowerCase().indexOf('iphone') === -1
+            && window.navigator.userAgent.toLowerCase().indexOf('safari') > -1);
+    };
+    /**
      * To get the value based on provided key and regX
      *
      * @param {string} key ?
@@ -122,7 +132,7 @@ var Browser = /** @class */ (function () {
      */
     Browser.getValue = function (key, regX) {
         var browserDetails = typeof window !== 'undefined' ? window.browserDetails : {};
-        if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 && Browser.isTouch === true) {
+        if (typeof navigator !== 'undefined' && navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1 && Browser.isTouch === true && !REGX_BROWSER.CHROME.test(navigator.userAgent)) {
             browserDetails['isIos'] = true;
             browserDetails['isDevice'] = true;
             browserDetails['isTouch'] = true;

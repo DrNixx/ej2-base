@@ -8,18 +8,18 @@ export declare function getRandomId(): string;
  * Interface for Template Engine.
  */
 export interface ITemplateEngine {
-    compile: (templateString: string, helper?: Object, ignorePrefix?: boolean) => (data: Object | JSON) => string;
+    compile: (templateString: string | Function, helper?: Object, ignorePrefix?: boolean) => (data: Object | JSON) => string;
 }
 /**
  * Compile the template string into template function.
  *
- * @param {string} templateString - The template string which is going to convert.
+ * @param {string | Function} templateString - The template string which is going to convert.
  * @param {Object} helper - Helper functions as an object.
  * @param {boolean} ignorePrefix ?
  * @returns {NodeList} ?
  * @private
  */
-export declare function compile(templateString: string, helper?: Object, ignorePrefix?: boolean): (data: Object | JSON, component?: any, propName?: any) => NodeList;
+export declare function compile(templateString: string | Function, helper?: Object, ignorePrefix?: boolean): (data: Object | JSON, component?: any, propName?: any) => NodeList;
 /**
  *
  * @param {string} templateId ?
@@ -53,3 +53,12 @@ export declare function setTemplateEngine(classObj: ITemplateEngine): void;
  * @private
  */
 export declare function getTemplateEngine(): (template: string, helper?: Object) => (data: Object | JSON) => string;
+/**
+ * Set the current template function to support Content Security Policy.
+ *
+ * @param {Function} template - The template function that is going to render.
+ * @param {any} helper - The data utilized by the template from the helper.
+ * @returns {Function} ?
+ * @private
+ */
+export declare function initializeCSPTemplate(template: Function, helper?: any): Function;

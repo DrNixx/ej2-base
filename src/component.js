@@ -105,6 +105,7 @@ var Component = /** @class */ (function (_super) {
         }
         if (this.enablePersistence) {
             this.setPersistData();
+            this.detachUnloadEvent();
         }
         this.localObserver.destroy();
         if (this.refreshing) {
@@ -167,6 +168,25 @@ var Component = /** @class */ (function (_super) {
         }
     };
     /**
+     * Adding unload event to persist data when enable persistence true
+     */
+    Component.prototype.attachUnloadEvent = function () {
+        this.handleUnload = this.handleUnload.bind(this);
+        window.addEventListener('unload', this.handleUnload);
+    };
+    /**
+     * Handling unload event to persist data when enable persistence true
+     */
+    Component.prototype.handleUnload = function () {
+        this.setPersistData();
+    };
+    /**
+     * Removing unload event to persist data when enable persistence true
+     */
+    Component.prototype.detachUnloadEvent = function () {
+        window.removeEventListener('unload', this.handleUnload);
+    };
+    /**
      * Appends the control within the given HTML element
      *
      * @param {string | HTMLElement} selector - Target element where control needs to be appended
@@ -188,7 +208,7 @@ var Component = /** @class */ (function (_super) {
             }
             if (this.enablePersistence) {
                 this.mergePersistData();
-                window.addEventListener('unload', this.setPersistData.bind(this));
+                this.attachUnloadEvent();
             }
             var inst = getValue('ej2_instances', this.element);
             if (!inst || inst.indexOf(this) === -1) {
@@ -446,7 +466,8 @@ var Component = /** @class */ (function (_super) {
                 var value = obj[key];
                 if (typeof value === 'object' && !(value instanceof Array)) {
                     var newList = ignoreList.filter(function (str) {
-                        return new RegExp(key + '.').test(str);
+                        var regExp = RegExp;
+                        return new regExp(key + '.').test(str);
                     }).map(function (str) {
                         return str.replace(key + '.', '');
                     });

@@ -37,6 +37,7 @@
         "security/detect-possible-timing-attacks":"error",
         "security/detect-pseudoRandomBytes":"error",
         "security/detect-new-buffer":"error",
+        "security/detect-bidi-characters":"error",
         "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/ban-types": ["warn", {
             "types": {

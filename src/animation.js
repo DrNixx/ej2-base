@@ -103,7 +103,7 @@ var Animation = /** @class */ (function (_super) {
      * @returns {void}
      */
     Animation.delayAnimation = function (model) {
-        if (animationMode === 'Disable') {
+        if (animationMode === 'Disable' || animationMode === GlobalAnimationMode.Disable) {
             if (model.begin) {
                 model.begin.call(this, model);
             }
@@ -430,13 +430,31 @@ export function enableRipple(isRipple) {
  *
  * @private
  */
-export var animationMode = '';
+export var animationMode;
 /**
- * Method for set the Global animation modes for Syncfusion Blazor components.
+ * This method is used to enable or disable the animation for all components.
  *
- * @param {string} value - Specifies the animation mode.
+ * @param {string|GlobalAnimationMode} value - Specifies the value to enable or disable the animation for all components. When set to 'enable', it enables the animation for all components, regardless of the individual component's animation settings. When set to 'disable', it disables the animation for all components, regardless of the individual component's animation settings.
  * @returns {void}
  */
 export function setGlobalAnimation(value) {
     animationMode = value;
 }
+/**
+ * Defines the global animation modes for all components.
+ */
+export var GlobalAnimationMode;
+(function (GlobalAnimationMode) {
+    /**
+    * Defines the global animation mode as Default. Animation is enabled or disabled based on the component's animation settings.
+    */
+    GlobalAnimationMode["Default"] = "Default";
+    /**
+    * Defines the global animation mode as Enable. Enables the animation for all components, regardless of the individual component's animation settings.
+    */
+    GlobalAnimationMode["Enable"] = "Enable";
+    /**
+    * Defines the global animation mode as Disable. Disables the animation for all components, regardless of the individual component's animation settings.
+    */
+    GlobalAnimationMode["Disable"] = "Disable";
+})(GlobalAnimationMode || (GlobalAnimationMode = {}));
