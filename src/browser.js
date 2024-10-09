@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUndefined } from './util';
 var REGX_MOBILE = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i;
 var REGX_IE = /msie|trident/i;
@@ -41,8 +42,7 @@ var Browser = /** @class */ (function () {
                 browserInfo.name = (clientInfo[1].toLowerCase() === 'crios' ? 'chrome' : browserInfo.name);
                 browserInfo.version = clientInfo[2];
                 browserInfo.culture.name = browserInfo.culture.language = navigator.language;
-                // eslint-disable-next-line
-                if (!!Browser.userAgent.match(REGX_IE11)) {
+                if (Browser.userAgent.match(REGX_IE11)) {
                     browserInfo.name = 'msie';
                     break;
                 }
@@ -59,10 +59,9 @@ var Browser = /** @class */ (function () {
      * To get events from the browser
      *
      * @param {string} event - type of event triggered.
-     * @returns {boolean}
+     * @returns {string} ?
      */
     Browser.getEvent = function (event) {
-        // eslint-disable-next-line
         var events = {
             start: {
                 isPointer: 'pointerdown', isTouch: 'touchstart', isDevice: 'mousedown'

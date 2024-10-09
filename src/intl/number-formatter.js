@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUndefined, throwError, isNullOrUndefined, extend, isBlazor, getValue } from '../util';
 import { defaultCurrencyCode } from '../internationalization';
 import { IntlBase as base } from './intl-base';
@@ -8,13 +9,9 @@ var errorText = {
     'mf': 'minimumFractionDigits',
     'lf': 'maximumFractionDigits'
 };
-var integerError = 'minimumIntegerDigits';
 var percentSign = 'percentSign';
 var minusSign = 'minusSign';
-var spaceRegex = /\s/;
 var mapper = ['infinity', 'nan', 'group', 'decimal', 'exponential'];
-var infinity = 'infinity';
-var nan = 'nan';
 /**
  * Module for number formatting.
  *
@@ -41,8 +38,7 @@ var NumberFormat = /** @class */ (function () {
         var numObject = dependable.numericObject;
         dOptions.numberMapper = isBlazor() ? extend({}, numObject) :
             parser.getNumberMapper(dependable.parserObject, parser.getNumberingSystem(cldr), true);
-        dOptions.currencySymbol = isBlazor() ? getValue('currencySymbol', numObject) : base.getCurrencySymbol(dependable.numericObject, fOptions.currency || defaultCurrencyCode, option.altSymbol);
-        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        dOptions.currencySymbol = isBlazor() ? getValue('currencySymbol', numObject) : base.getCurrencySymbol(dependable.numericObject, fOptions.currency || defaultCurrencyCode, option.altSymbol, option.ignoreCurrency);
         dOptions.percentSymbol = isBlazor() ? getValue('numberSymbols.percentSign', numObject) :
             dOptions.numberMapper.numberSymbols["" + percentSign];
         dOptions.minusSymbol = isBlazor() ? getValue('numberSymbols.minusSign', numObject) :
@@ -50,6 +46,9 @@ var NumberFormat = /** @class */ (function () {
         var symbols = dOptions.numberMapper.numberSymbols;
         if ((option.format) && !(base.formatRegex.test(option.format))) {
             cOptions = base.customFormat(option.format, dOptions, dependable.numericObject);
+            if (!isUndefined(fOptions.useGrouping) && fOptions.useGrouping) {
+                fOptions.useGrouping = cOptions.pData.useGrouping;
+            }
         }
         else {
             extend(fOptions, base.getProperNumericSkeleton(option.format || 'N'));
@@ -149,7 +148,6 @@ var NumberFormat = /** @class */ (function () {
         var decide = isFraction ? 'f' : 's';
         var dint = 0;
         var str1 = errorText['l' + decide];
-        // eslint-disable-next-line
         var str2 = errorText['m' + decide];
         if (!isUndefined(val1)) {
             this.checkRange(val1, str1, isFraction);
@@ -192,6 +190,7 @@ var NumberFormat = /** @class */ (function () {
      * @param {number} value ?
      * @param {base.GenericFormatOptions} fOptions ?
      * @param {CommonOptions} dOptions ?
+     * @param {NumberFormatOptions} [option] ?
      * @returns {string} ?
      */
     NumberFormat.intNumberFormatter = function (value, fOptions, dOptions, option) {
@@ -228,7 +227,7 @@ var NumberFormat = /** @class */ (function () {
                     var decimalPart = temp[1];
                     var len = decimalPart.length;
                     for (var i = len - 1; i >= 0; i--) {
-                        if (decimalPart["" + i] === '0' && i >= curData.minimumFractionDigits) {
+                        if (decimalPart[parseInt(i.toString(), 10)] === '0' && i >= curData.minimumFractionDigits) {
                             decimalPart = decimalPart.slice(0, i);
                         }
                         else {
@@ -243,9 +242,8 @@ var NumberFormat = /** @class */ (function () {
                 fValue = fValue.replace('e', dOptions.numberMapper.numberSymbols[mapper[4]]);
             }
             fValue = fValue.replace('.', dOptions.numberMapper.numberSymbols[mapper[3]]);
-            fValue = curData.format === "#,###,,;(#,###,,)" ? this.customPivotFormat(parseInt(fValue)) : fValue;
+            fValue = curData.format === '#,###,,;(#,###,,)' ? this.customPivotFormat(parseInt(fValue, 10)) : fValue;
             if (curData.useGrouping) {
-                /* eslint-disable  @typescript-eslint/no-explicit-any */
                 fValue = this.groupNumbers(fValue, curData.groupData.primary, curData.groupSeparator || ',', dOptions.numberMapper.numberSymbols[mapper[3]] || '.', curData.groupData.secondary);
             }
             fValue = parser.convertValueParts(fValue, base.latnParseRegex, dOptions.numberMapper.mapper);
@@ -315,6 +313,7 @@ var NumberFormat = /** @class */ (function () {
      * @param {number} value ?
      * @param {number} min ?
      * @param {number} max ?
+     * @param {NumberFormatOptions} [option] ?
      * @returns {string} ?
      */
     NumberFormat.processFraction = function (value, min, max, option) {
@@ -366,16 +365,17 @@ var NumberFormat = /** @class */ (function () {
      * Returns custom format for pivot table
      *
      * @param {number} value ?
+     * @returns {string} ?
      */
     NumberFormat.customPivotFormat = function (value) {
         if (value >= 500000) {
             value /= 1000000;
-            var _a = value.toString().split("."), integer = _a[0], decimal = _a[1];
+            var _a = value.toString().split('.'), integer = _a[0], decimal = _a[1];
             return decimal && +decimal.substring(0, 1) >= 5
                 ? Math.ceil(value).toString()
                 : Math.floor(value).toString();
         }
-        return "";
+        return '';
     };
     return NumberFormat;
 }());

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Functions related to dom operations.
  */
@@ -203,7 +204,6 @@ function executeScript(ele) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function detach(element) {
     var parentNode = element.parentNode;
     if (parentNode) {
@@ -230,7 +230,6 @@ export function remove(element) {
  * @returns {Element} ?
  * @private
  */
-// eslint-disable-next-line
 export function attributes(element, attributes) {
     var keys = Object.keys(attributes);
     var ele = element;
@@ -258,7 +257,6 @@ export function attributes(element, attributes) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function select(selector, context, needsVDOM) {
     if (context === void 0) { context = document; }
     selector = querySelectId(selector);
@@ -273,7 +271,6 @@ export function select(selector, context, needsVDOM) {
  * @returns {HTMLElement[]} ?
  * @private
  */
-// eslint-disable-next-line
 export function selectAll(selector, context, needsVDOM) {
     if (context === void 0) { context = document; }
     selector = querySelectId(selector);
@@ -390,8 +387,7 @@ export function getAttributeOrDefault(element, property, value) {
 export function setStyleAttribute(element, attrs) {
     if (attrs !== undefined) {
         Object.keys(attrs).forEach(function (key) {
-            // eslint-disable-next-line
-            element.style[key] = attrs[key];
+            element.style["" + key] = attrs["" + key];
         });
     }
 }
@@ -417,7 +413,6 @@ export function classList(element, addClasses, removeClasses) {
  * @private
  */
 export function matches(element, selector) {
-    // eslint-disable-next-line
     var matches = element.matches || element.msMatchesSelector || element.webkitMatchesSelector;
     if (matches) {
         return matches.call(element, selector);
@@ -445,11 +440,10 @@ export function includeInnerHTML(ele, innerHTML) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function containsClass(ele, className) {
     if (isObject(ele)) {
-        // eslint-disable-next-line
-        return new RegExp('\\b' + className + '\\b', 'i').test(ele.attributes.className);
+        var regExp = RegExp;
+        return new regExp('\\b' + className + '\\b', 'i').test(ele.attributes.className);
     }
     else {
         return ele.classList.contains(className);
@@ -463,7 +457,6 @@ export function containsClass(ele, className) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function cloneNode(element, deep) {
     if (isObject(element)) {
         if (deep) {

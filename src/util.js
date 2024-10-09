@@ -18,7 +18,6 @@ export function disableBlazorMode() {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function createInstance(classFunction, params) {
     var arrayParam = params;
     arrayParam.unshift(undefined);
@@ -33,12 +32,10 @@ export function createInstance(classFunction, params) {
  */
 export function setImmediate(handler) {
     var unbind;
-    // eslint-disable-next-line
     var num = new Uint16Array(5);
     var intCrypto = window.msCrypto || window.crypto;
     intCrypto.getRandomValues(num);
     var secret = 'ej2' + combineArray(num);
-    // eslint-disable-next-line
     var messageHandler = function (event) {
         if (event.source === window && typeof event.data === 'string' && event.data.length <= 32 && event.data === secret) {
             handler();
@@ -60,9 +57,7 @@ export function setImmediate(handler) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function getValue(nameSpace, obj) {
-    // eslint-disable-next-line
     var value = obj;
     var splits = nameSpace.replace(/\[/g, '.').replace(/\]/g, '').split('.');
     for (var i = 0; i < splits.length && !isUndefined(value); i++) {
@@ -79,12 +74,9 @@ export function getValue(nameSpace, obj) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function setValue(nameSpace, value, obj) {
     var keys = nameSpace.replace(/\[/g, '.').replace(/\]/g, '').split('.');
-    // eslint-disable-next-line
     var start = obj || {};
-    // eslint-disable-next-line
     var fromObj = start;
     var i;
     var length = keys.length;
@@ -109,14 +101,12 @@ export function setValue(nameSpace, value, obj) {
  * @returns {void} ?
  * @private
  */
-// eslint-disable-next-line
 export function deleteObject(obj, key) {
     delete obj["" + key];
 }
 /**
  *@private
  */
-// eslint-disable-next-line
 export var containerObject = typeof window !== 'undefined' ? window : {};
 /**
  * Check weather the given argument is only object.
@@ -125,7 +115,6 @@ export var containerObject = typeof window !== 'undefined' ? window : {};
  * @returns {boolean} ?
  * @private
  */
-// eslint-disable-next-line
 export function isObject(obj) {
     var objCon = {};
     return (!isNullOrUndefined(obj) && obj.constructor === objCon.constructor);
@@ -138,10 +127,8 @@ export function isObject(obj) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function getEnumValue(enumObject, enumValue) {
-    // eslint-disable-next-line
-    return enumObject[enumValue];
+    return enumObject["" + enumValue];
 }
 /**
  * Merge the source object into destination object.
@@ -182,28 +169,25 @@ export function merge(source, destination) {
 export function extend(copied, first, second, deep) {
     var result = copied && typeof copied === 'object' ? copied : {};
     var length = arguments.length;
+    var args = [copied, first, second, deep];
     if (deep) {
         length = length - 1;
     }
     var _loop_1 = function (i) {
-        // eslint-disable-next-line
-        if (!arguments_1[i]) {
+        if (!args[parseInt(i.toString(), 10)]) {
             return "continue";
         }
-        // eslint-disable-next-line
-        var obj1 = arguments_1[i];
+        var obj1 = args[parseInt(i.toString(), 10)];
         Object.keys(obj1).forEach(function (key) {
             var src = result["" + key];
             var copy = obj1["" + key];
             var clone;
             var isArrayChanged = Array.isArray(copy) && Array.isArray(src) && (copy.length !== src.length);
-            // eslint-disable-next-line
             var blazorEventExtend = isBlazor() ? (!(src instanceof Event) && !isArrayChanged) : true;
             if (deep && blazorEventExtend && (isObject(copy) || Array.isArray(copy))) {
                 if (isObject(copy)) {
                     clone = src ? src : {};
-                    // eslint-disable-next-line
-                    if (Array.isArray(clone) && clone.hasOwnProperty('isComplexArray')) {
+                    if (Array.isArray(clone) && Object.prototype.hasOwnProperty.call(clone, 'isComplexArray')) {
                         extend(clone, {}, copy, deep);
                     }
                     else {
@@ -213,7 +197,6 @@ export function extend(copied, first, second, deep) {
                 else {
                     /* istanbul ignore next */
                     clone = isBlazor() ? src && Object.keys(copy).length : src ? src : [];
-                    // eslint-disable-next-line
                     result["" + key] = extend([], clone, copy, (clone && clone.length) || (copy && copy.length));
                 }
             }
@@ -222,7 +205,6 @@ export function extend(copied, first, second, deep) {
             }
         });
     };
-    var arguments_1 = arguments;
     for (var i = 1; i < length; i++) {
         _loop_1(i);
     }
@@ -231,7 +213,7 @@ export function extend(copied, first, second, deep) {
 /**
  * To check whether the object is null or undefined.
  *
- * @param {Object} value - To check the object is null or undefined
+ * @param {any} value - To check the object is null or undefined
  * @returns {boolean} ?
  * @private
  */
@@ -241,7 +223,7 @@ export function isNullOrUndefined(value) {
 /**
  * To check whether the object is undefined.
  *
- * @param {Object} value - To check the object is undefined
+ * @param {any} value - To check the object is undefined
  * @returns {boolean} ?
  * @private
  */
@@ -267,12 +249,13 @@ export function getUniqueID(definedName) {
  * @private
  */
 export function debounce(eventFunction, delay) {
-    // eslint-disable-next-line
     var out;
     return function () {
         var _this = this;
-        // eslint-disable-next-line
-        var args = arguments;
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
         var later = function () {
             out = null;
             return eventFunction.apply(_this, args);
@@ -288,7 +271,6 @@ export function debounce(eventFunction, delay) {
  * @returns {string} ?
  * @private
  */
-// eslint-disable-next-line
 export function queryParams(data) {
     var array = [];
     var keys = Object.keys(data);
@@ -346,8 +328,7 @@ export function throwError(message) {
         throw new Error(message);
     }
     catch (e) {
-        // eslint-disable-next-line
-        throw e.message + '\n' + e.stack;
+        throw new Error(e.message + '\n' + e.stack);
     }
 }
 /**
@@ -379,7 +360,6 @@ export function print(element, printWindow) {
         '<script> (function() { window.ready = true; })(); </script>' + '</body></html>');
     printWindow.document.close();
     printWindow.focus();
-    // eslint-disable-next-line
     var interval = setInterval(function () {
         if (printWindow.ready) {
             printWindow.print();
@@ -443,9 +423,7 @@ export function getElement(element) {
  * @returns {Object} ?
  * @private
  */
-// eslint-disable-next-line
 export function getInstance(element, component) {
-    // eslint-disable-next-line
     var elem = (typeof (element) === 'string') ? document.querySelector(element) : element;
     if (elem["" + instances]) {
         for (var _i = 0, _a = elem["" + instances]; _i < _a.length; _i++) {
@@ -466,7 +444,6 @@ export function getInstance(element, component) {
  * @private
  */
 export function addInstance(element, instance) {
-    // eslint-disable-next-line
     var elem = (typeof (element) === 'string') ? document.querySelector(element) : element;
     if (elem["" + instances]) {
         elem["" + instances].push(instance);
@@ -481,12 +458,10 @@ export function addInstance(element, instance) {
  * @returns {any} ?
  * @private
  */
-// eslint-disable-next-line
 export function uniqueID() {
     if ((typeof window) === 'undefined') {
         return;
     }
-    // eslint-disable-next-line
     var num = new Uint16Array(5);
     var intCrypto = window.msCrypto || window.crypto;
     return intCrypto.getRandomValues(num);

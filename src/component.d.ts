@@ -48,6 +48,10 @@ export declare abstract class Component<ElementType extends HTMLElement> extends
     };
     protected needsID: boolean;
     protected isReactHybrid: boolean;
+    isAngular: boolean;
+    isReact: boolean;
+    isVue: boolean;
+    portals: any;
     protected moduleLoader: ModuleLoader;
     protected localObserver: Observer;
     protected abstract render(): void;
@@ -83,16 +87,22 @@ export declare abstract class Component<ElementType extends HTMLElement> extends
     getLocalData(): any;
     /**
      * Adding unload event to persist data when enable persistence true
+     *
+     * @returns {void}
      */
-    attachUnloadEvent(): any;
+    attachUnloadEvent(): void;
     /**
      * Handling unload event to persist data when enable persistence true
+     *
+     * @returns {void}
      */
-    handleUnload(): any;
+    handleUnload(): void;
     /**
      * Removing unload event to persist data when enable persistence true
+     *
+     * @returns {void}
      */
-    detachUnloadEvent(): any;
+    detachUnloadEvent(): void;
     /**
      * Appends the control within the given HTML element
      *

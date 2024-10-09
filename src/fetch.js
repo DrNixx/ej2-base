@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isNullOrUndefined as isNOU, isObject, merge } from './util';
 /**
  * The Fetch class provides a way to make asynchronous network requests, typically to retrieve resources from a server.
@@ -83,16 +84,14 @@ var Fetch = /** @class */ (function () {
                 var responseType = 'text';
                 for (var _i = 0, _a = Object.keys(contentTypes); _i < _a.length; _i++) {
                     var key = _a[_i];
-                    if (response.headers.get('Content-Type').indexOf(key) !== -1) {
+                    if (response.headers.get('Content-Type') && response.headers.get('Content-Type').indexOf(key) !== -1) {
                         responseType = contentTypes[key];
                     }
                 }
                 return response[responseType]();
-                // eslint-disable-next-line
             }).then(function (data) {
                 _this.triggerEvent(_this['onSuccess'], data, _this);
                 return data;
-                // eslint-disable-next-line
             }).catch(function (error) {
                 var returnVal = {};
                 if (_this.emitError) {

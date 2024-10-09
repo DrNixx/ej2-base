@@ -15,6 +15,7 @@ export interface BlazorDotnetObject {
  * Base library module is common module for Framework modules like touch,keyboard and etc.,
  *
  * @private
+ * @returns {void} ?
  */
 export declare abstract class Base<ElementType extends HTMLElement> {
     element: ElementType;
@@ -135,7 +136,9 @@ export declare function getComponent<T>(elem: HTMLElement | string, comp: string
  * Function to remove the child instances.
  *
  * @param {HTMLElement} element ?
- * @return {void}
+ * @returns {void} ?
  * @private
  */
 export declare function removeChildInstance(element: HTMLElement): void;
+export declare let proxyToRaw: Function;
+export declare const setProxyToRaw: Function;

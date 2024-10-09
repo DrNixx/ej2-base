@@ -85,7 +85,7 @@ export declare class Animation extends Base<HTMLElement> implements INotifyPrope
      *
      * @param {HTMLElement} element - Element which needs to be stop the animation.
      * @param {AnimationOptions} model - Handling the animation model at stop function.
-     * @return {void}
+     * @returns {void}
      */
     static stop(element: HTMLElement, model?: AnimationOptions): void;
     /**
@@ -212,15 +212,15 @@ export declare function setGlobalAnimation(value: string | GlobalAnimationMode):
  */
 export declare enum GlobalAnimationMode {
     /**
-    * Defines the global animation mode as Default. Animation is enabled or disabled based on the component's animation settings.
-    */
+     * Defines the global animation mode as Default. Animation is enabled or disabled based on the component's animation settings.
+     */
     Default = "Default",
     /**
-    * Defines the global animation mode as Enable. Enables the animation for all components, regardless of the individual component's animation settings.
-    */
+     * Defines the global animation mode as Enable. Enables the animation for all components, regardless of the individual component's animation settings.
+     */
     Enable = "Enable",
     /**
-    * Defines the global animation mode as Disable. Disables the animation for all components, regardless of the individual component's animation settings.
-    */
+     * Defines the global animation mode as Disable. Disables the animation for all components, regardless of the individual component's animation settings.
+     */
     Disable = "Disable"
 }

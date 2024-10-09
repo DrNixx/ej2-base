@@ -55,7 +55,6 @@ var Droppable = /** @class */ (function (_super) {
         EventHandler.add(this.element, Browser.isSafari() ? 'touchend' : Browser.touchEndEvent, this.intDrop, this);
     };
     // triggers when property changed
-    // eslint-disable-next-line
     Droppable.prototype.onPropertyChanged = function (newProp, oldProp) {
         //No Code to handle
     };

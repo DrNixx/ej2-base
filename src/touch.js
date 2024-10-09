@@ -17,6 +17,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { extend } from './util';
 import { Property, Complex, NotifyPropertyChanges, Event } from './notify-property-change';
 import { Browser } from './browser';
@@ -172,10 +173,8 @@ var Touch = /** @class */ (function (_super) {
                 velocity: _this.getVelocity(point)
             };
             if (_this.isTouchMoved) {
-                var eSwipeArgs = void 0;
                 var tDistance = _this.swipeSettings.swipeThresholdDistance;
-                // eslint-disable-next-line
-                eSwipeArgs = extend(eSwipeArgs, _this.defaultArgs, swipeArgs);
+                var eSwipeArgs = extend(undefined, _this.defaultArgs, swipeArgs);
                 var canTrigger = false;
                 var ele = _this.element;
                 var scrollBool = _this.isScrollable(ele);
@@ -214,7 +213,6 @@ var Touch = /** @class */ (function (_super) {
      * @param {TouchModel} oldProp ?
      * @returns {void} ?
      */
-    // eslint-disable-next-line
     Touch.prototype.onPropertyChanged = function (newProp, oldProp) {
         //No Code to handle
     };
@@ -271,11 +269,9 @@ var Touch = /** @class */ (function (_super) {
     Touch.prototype.tapHoldEvent = function (evt) {
         this.tapCount = 0;
         this.touchAction = true;
-        var eTapArgs;
         EventHandler.remove(this.element, Browser.touchMoveEvent, this.moveEvent);
         EventHandler.remove(this.element, Browser.touchEndEvent, this.endEvent);
-        // eslint-disable-next-line
-        eTapArgs = { originalEvent: evt };
+        var eTapArgs = { originalEvent: evt };
         this.trigger('tapHold', eTapArgs);
         EventHandler.remove(this.element, Browser.touchCancelEvent, this.cancelEvent);
     };
@@ -314,7 +310,6 @@ var Touch = /** @class */ (function (_super) {
         var interval = newT - this.tStampStart;
         return Math.sqrt(xDist * xDist + yDist * yDist) / interval;
     };
-    // eslint-disable-next-line
     Touch.prototype.checkSwipe = function (ele, flag) {
         var keys = ['scroll', 'offset'];
         var temp = flag ? ['Height', 'Top'] : ['Width', 'Left'];

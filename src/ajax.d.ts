@@ -71,7 +71,7 @@ export declare class Ajax {
      * Send the request to server.
      *
      * @param {any} data - To send the user data
-     * @return {Promise} ?
+     * @returns {Promise} ?
      */
     send(data?: string | Object): Promise<Ajax>;
     /**

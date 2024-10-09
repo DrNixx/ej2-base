@@ -10,7 +10,7 @@ export declare class Browser {
      * To get events from the browser
      *
      * @param {string} event - type of event triggered.
-     * @returns {boolean}
+     * @returns {string} ?
      */
     private static getEvent;
     /**

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Module loading operations
  */
@@ -58,6 +59,17 @@ var ModuleLoader = /** @class */ (function () {
             }
         }
         this.loadedModules = [];
+    };
+    /**
+     * Returns the array of modules that are not loaded in the component library.
+     *
+     * @param {ModuleDeclaration[]} requiredModules - Array of modules to be required
+     * @returns {ModuleDeclaration[]} ?
+     * @private
+     */
+    ModuleLoader.prototype.getNonInjectedModules = function (requiredModules) {
+        var _this = this;
+        return requiredModules.filter(function (module) { return !_this.isModuleLoaded(module.member); });
     };
     /**
      * Removes all unused modules

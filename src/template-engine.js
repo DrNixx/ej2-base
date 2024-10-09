@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types */
 /**
  * Template Engine Bridge
  */
@@ -23,10 +24,8 @@ export function getRandomId() {
  * @returns {NodeList} ?
  * @private
  */
-// eslint-disable-next-line
 export function compile(templateString, helper, ignorePrefix) {
     var compiler = engineObj.compile(templateString, helper, ignorePrefix);
-    // eslint-disable-next-line
     return function (data, component, propName, templateId, isStringTemplate, index, element, root) {
         var result = compiler(data, component, propName, element, root);
         var blazorTemplateId = 'BlazorTemplateId';
@@ -52,9 +51,7 @@ export function compile(templateString, helper, ignorePrefix) {
                 data["" + blazorTemplateId] = blazorId;
                 blazorTemplates["" + templateId].push(data);
             }
-            // eslint-disable-next-line
             return propName === 'rowTemplate' ? [createElement('tr', { id: blazorId, className: 'e-blazor-template' })] :
-                // eslint-disable-next-line
                 [createElement('div', { id: blazorId, className: 'e-blazor-template' })];
         }
         if (typeof result === 'string') {
@@ -100,7 +97,6 @@ export function updateBlazorTemplate(templateId, templateName, comp, isEmpty, ca
 export function resetBlazorTemplate(templateId, templateName, index) {
     var templateDiv = document.getElementById(templateId);
     if (templateDiv) {
-        // eslint-disable-next-line
         var innerTemplates = templateDiv.getElementsByClassName('blazor-inner-template');
         for (var i = 0; i < innerTemplates.length; i++) {
             var tempId = ' ';
@@ -169,7 +165,6 @@ export function initializeCSPTemplate(template, helper) {
 var Engine = /** @class */ (function () {
     function Engine() {
     }
-    // eslint-disable-next-line
     Engine.prototype.compile = function (templateString, helper, ignorePrefix) {
         if (helper === void 0) { helper = {}; }
         return render(templateString, helper);

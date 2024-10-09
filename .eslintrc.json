@@ -15,7 +15,8 @@
         "ecmaVersion": 2018,
         "project": "./tsconfig.json",
         "sourceType": "module"
-      },
+    },
+    "ignorePatterns": ["*.d.ts", "*.js"],
     "plugins": [
         "@typescript-eslint",
         "@typescript-eslint/tslint",
@@ -184,7 +185,7 @@
             "error",
             "never"
         ],
-        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-explicit-any": "warn",
         "no-cond-assign": [
             "error",
             "always"

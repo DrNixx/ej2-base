@@ -100,19 +100,19 @@ export declare function extend(copied: Object, first: Object, second?: Object, d
 /**
  * To check whether the object is null or undefined.
  *
- * @param {Object} value - To check the object is null or undefined
+ * @param {any} value - To check the object is null or undefined
  * @returns {boolean} ?
  * @private
  */
-export declare function isNullOrUndefined(value: Object): boolean;
+export declare function isNullOrUndefined<T>(value: T): boolean;
 /**
  * To check whether the object is undefined.
  *
- * @param {Object} value - To check the object is undefined
+ * @param {any} value - To check the object is undefined
  * @returns {boolean} ?
  * @private
  */
-export declare function isUndefined(value: Object): boolean;
+export declare function isUndefined<T>(value: T): boolean;
 /**
  * To return the generated unique name
  *

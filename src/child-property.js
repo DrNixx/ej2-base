@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getValue, setValue, merge, isBlazor } from './util';
 import { Base } from './base';
 /**
  * To detect the changes for inner properties.
  *
  * @private
+ * @returns {void} ?
  */
 var ChildProperty = /** @class */ (function () {
     function ChildProperty(parent, propName, defaultValue, isArray) {
@@ -12,7 +14,6 @@ var ChildProperty = /** @class */ (function () {
         this.changedProperties = {};
         this.childChangedProperties = {};
         this.oldProperties = {};
-        // eslint-disable-next-line
         this.finalUpdate = function () { };
         this.callChildDataBind = getValue('callChildDataBind', Base);
         this.parentObj = parent;
@@ -156,7 +157,6 @@ var ChildProperty = /** @class */ (function () {
         }
     };
     ChildProperty.prototype.getParentKey = function (isSaveChanges) {
-        // eslint-disable-next-line
         var index = '';
         var propName = this.propName;
         /* istanbul ignore next */

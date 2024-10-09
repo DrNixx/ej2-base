@@ -55,7 +55,7 @@ var Ajax = /** @class */ (function () {
      * Send the request to server.
      *
      * @param {any} data - To send the user data
-     * @return {Promise} ?
+     * @returns {Promise} ?
      */
     Ajax.prototype.send = function (data) {
         var _this = this;
@@ -86,7 +86,6 @@ var Ajax = /** @class */ (function () {
             if (!isNullOrUndefined(_this.onUploadProgress)) {
                 _this.httpRequest.upload.onprogress = _this.onUploadProgress;
             }
-            // eslint-disable-next-line
             _this.httpRequest.open(_this.type, _this.url, _this.mode);
             // Set default headers
             if (!isNullOrUndefined(_this.data) && _this.contentType !== null) {
@@ -151,17 +150,13 @@ var Ajax = /** @class */ (function () {
      * @returns {string} ?
      */
     Ajax.prototype.getResponseHeader = function (key) {
-        var responseHeaders;
-        var header;
-        // eslint-disable-next-line
-        responseHeaders = {};
+        var responseHeaders = {};
         var headers = headerRegex.exec(this.httpRequest.getAllResponseHeaders());
         while (headers) {
             responseHeaders[headers[1].toLowerCase()] = headers[2];
             headers = headerRegex.exec(this.httpRequest.getAllResponseHeaders());
         }
-        // eslint-disable-next-line
-        header = responseHeaders[key.toLowerCase()];
+        var header = responseHeaders[key.toLowerCase()];
         return isNullOrUndefined(header) ? null : header;
     };
     return Ajax;

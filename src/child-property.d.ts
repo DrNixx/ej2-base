@@ -2,6 +2,7 @@
  * To detect the changes for inner properties.
  *
  * @private
+ * @returns {void} ?
  */
 export declare class ChildProperty<T> {
     private parentObj;

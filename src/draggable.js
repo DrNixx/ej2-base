@@ -17,6 +17,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Base } from './base';
 import { Browser } from './browser';
 import { isVisible } from './dom';
@@ -26,9 +27,6 @@ import { ChildProperty } from './child-property';
 import { select, closest, setStyleAttribute, addClass, createElement } from './dom';
 import { extend, isUndefined, isNullOrUndefined, compareElementParent, isBlazor } from './util';
 var defaultPosition = { left: 0, top: 0, bottom: 0, right: 0 };
-var positionProp = ['offsetLeft', 'offsetTop'];
-var axisMapper = ['x', 'y'];
-var axisValueMapper = ['left', 'top'];
 var isDraggedObject = { isDragged: false };
 /**
  * Specifies the position coordinates
@@ -75,7 +73,6 @@ var Draggable = /** @class */ (function (_super) {
         _this.prevTop = 0;
         _this.dragProcessStarted = false;
         _this.eleTop = 0;
-        /* eslint-disable @typescript-eslint/no-explicit-any */
         _this.tapHoldTimer = 0;
         _this.externalInitialize = false;
         _this.diffY = 0;
@@ -180,7 +177,6 @@ var Draggable = /** @class */ (function (_super) {
         this.target = (evt.currentTarget || curTarget);
         this.dragProcessStarted = false;
         if (this.abort) {
-            /* tslint:disable no-any */
             var abortSelectors = this.abort;
             if (typeof abortSelectors === 'string') {
                 abortSelectors = [abortSelectors];
@@ -367,7 +363,6 @@ var Draggable = /** @class */ (function (_super) {
             top: (rect.top + window.pageYOffset) - parseInt(style.marginTop, 10)
         };
     };
-    // tslint:disable-next-line:max-func-body-length
     Draggable.prototype.intDrag = function (evt) {
         if (!isUndefined(evt.changedTouches) && (evt.changedTouches.length !== 1)) {
             return;
@@ -392,7 +387,6 @@ var Draggable = /** @class */ (function (_super) {
         }
         var eleObj = this.checkTargetElement(evt);
         if (eleObj.target && eleObj.instance) {
-            /* tslint:disable no-any */
             var flag = true;
             if (this.hoverObject) {
                 if (this.hoverObject.instance !== eleObj.instance) {
@@ -551,7 +545,6 @@ var Draggable = /** @class */ (function (_super) {
             if (elements.length === 0) {
                 elements = this.getPathElements(evt);
             }
-            /* tslint:disable no-any */
             var scrollParent = this.getScrollParent(elements, false);
             if (this.elementInViewport(this.helperElement)) {
                 this.getScrollPosition(scrollParent, draEleTop);
@@ -573,9 +566,7 @@ var Draggable = /** @class */ (function (_super) {
         this.pageX = pagex;
         this.pageY = pagey;
     };
-    /* tslint:disable no-any */
     Draggable.prototype.getScrollParent = function (node, reverse) {
-        /* tslint:disable no-any */
         var nodeEl = reverse ? node.reverse() : node;
         var hasScroll;
         for (var i = nodeEl.length - 1; i >= 0; i--) {
@@ -602,10 +593,12 @@ var Draggable = /** @class */ (function (_super) {
             }
         }
         else if (nodeEle && nodeEle !== document.scrollingElement) {
-            if ((nodeEle.clientHeight + nodeEle.getBoundingClientRect().top - this.helperElement.clientHeight + document.scrollingElement.scrollTop) < draEleTop) {
+            var docScrollTop = document.scrollingElement.scrollTop;
+            var helperClientHeight = this.helperElement.clientHeight;
+            if ((nodeEle.clientHeight + nodeEle.getBoundingClientRect().top - helperClientHeight + docScrollTop) < draEleTop) {
                 nodeEle.scrollTop += this.helperElement.clientHeight;
             }
-            else if (nodeEle.getBoundingClientRect().top > (draEleTop - this.helperElement.clientHeight - document.scrollingElement.scrollTop)) {
+            else if (nodeEle.getBoundingClientRect().top > (draEleTop - helperClientHeight - docScrollTop)) {
                 nodeEle.scrollTop -= this.helperElement.clientHeight;
             }
         }
@@ -664,6 +657,8 @@ var Draggable = /** @class */ (function (_super) {
         document.body.classList.remove('e-prevent-select');
     };
     /**
+     * @param {MouseEvent | TouchEvent} evt ?
+     * @returns {void}
      * @private
      */
     Draggable.prototype.intDestroy = function (evt) {
@@ -736,7 +731,7 @@ var Draggable = /** @class */ (function (_super) {
         var intCoord = this.getCoordinates(evt);
         var ele;
         var prevStyle = this.helperElement.style.pointerEvents || '';
-        var isPointer = evt.type.indexOf('pointer') !== -1 && Browser.info.name === 'safari' && parseInt(Browser.info.version) > 12;
+        var isPointer = evt.type.indexOf('pointer') !== -1 && Browser.info.name === 'safari' && parseInt(Browser.info.version, 10) > 12;
         if (compareElementParent(evt.target, this.helperElement) || evt.type.indexOf('touch') !== -1 || isPointer) {
             this.helperElement.style.pointerEvents = 'none';
             ele = document.elementFromPoint(intCoord.clientX, intCoord.clientY);
@@ -759,7 +754,6 @@ var Draggable = /** @class */ (function (_super) {
         return elem;
     };
     Draggable.prototype.getMousePosition = function (evt, isdragscroll) {
-        /* tslint:disable no-any */
         var dragEle = evt.srcElement !== undefined ? evt.srcElement : evt.target;
         var intCoord = this.getCoordinates(evt);
         var pageX;
@@ -777,10 +771,11 @@ var Draggable = /** @class */ (function (_super) {
             pageY = this.clone ? intCoord.pageY : (intCoord.pageY + window.pageYOffset) - this.relativeYPosition;
         }
         if (document.scrollingElement && (!isdragscroll && !this.clone)) {
-            var isVerticalScroll = document.scrollingElement.scrollHeight > 0 && document.scrollingElement.scrollHeight > document.scrollingElement.clientHeight && document.scrollingElement.scrollTop > 0;
-            var isHorrizontalScroll = document.scrollingElement.scrollWidth > 0 && document.scrollingElement.scrollWidth > document.scrollingElement.clientWidth && document.scrollingElement.scrollLeft > 0;
-            pageX = isHorrizontalScroll ? pageX - document.scrollingElement.scrollLeft : pageX;
-            pageY = isVerticalScroll ? pageY - document.scrollingElement.scrollTop : pageY;
+            var ele = document.scrollingElement;
+            var isVerticalScroll = ele.scrollHeight > 0 && ele.scrollHeight > ele.clientHeight && ele.scrollTop > 0;
+            var isHorrizontalScroll = ele.scrollWidth > 0 && ele.scrollWidth > ele.clientWidth && ele.scrollLeft > 0;
+            pageX = isHorrizontalScroll ? pageX - ele.scrollLeft : pageX;
+            pageY = isVerticalScroll ? pageY - ele.scrollTop : pageY;
         }
         return {
             left: pageX - (this.margin.left + this.cursorAt.left),

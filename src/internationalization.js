@@ -256,9 +256,7 @@ export function enableRtl(status) {
  * @private
  */
 export function getNumericObject(locale, type) {
-    // eslint-disable-next-line
     var numObject = IntlBase.getDependables(cldrData, locale, '', true)[mapper[0]];
-    // eslint-disable-next-line
     var dateObject = IntlBase.getDependables(cldrData, locale, '')[mapper[1]];
     var numSystem = getValue('defaultNumberingSystem', numObject);
     var symbPattern = isBlazor() ? getValue('numberSymbols', numObject) : getValue('symbols-numberSystem-' + numSystem, numObject);
@@ -275,9 +273,7 @@ export function getNumericObject(locale, type) {
  * @private
  */
 export function getNumberDependable(locale, currency) {
-    // eslint-disable-next-line
     var numObject = IntlBase.getDependables(cldrData, locale, '', true);
-    // eslint-disable-next-line
     return IntlBase.getCurrencySymbol(numObject.numericObject, currency);
 }
 /**
@@ -289,6 +285,5 @@ export function getNumberDependable(locale, currency) {
  * @private
  */
 export function getDefaultDateObject(mode) {
-    // eslint-disable-next-line
     return IntlBase.getDependables(cldrData, '', mode, false)[mapper[1]];
 }

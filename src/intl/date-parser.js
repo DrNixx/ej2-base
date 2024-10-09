@@ -14,7 +14,6 @@ var timeSetter = {
     milliseconds: 'setMilliseconds'
 };
 var month = 'months';
-/* tslint:disable no-any */
 /**
  * Date Parser.
  *
@@ -55,17 +54,15 @@ var DateParser = /** @class */ (function () {
             var zCorrectTemp = 0;
             var isgmtTraversed = false;
             var nRegx = numOptions.numericRegex;
-            // eslint-disable-next-line
-            var numMapper = isBlazor() ? dependable.parserObject.numbers :
-                parser.getNumberMapper(dependable.parserObject, parser.getNumberingSystem(cldr));
+            var numMapper = isBlazor() ? dependable.parserObject.numbers
+                : parser.getNumberMapper(dependable.parserObject, parser.getNumberingSystem(cldr));
             for (var i = 0; i < length_1; i++) {
                 var str = patternMatch[parseInt(i.toString(), 10)];
                 var len = str.length;
                 var char = (str[0] === 'K') ? 'h' : str[0];
                 var isNumber = void 0;
                 var canUpdate = void 0;
-                // eslint-disable-next-line
-                var charKey = datePartMatcher[char];
+                var charKey = datePartMatcher["" + char];
                 var optional = (len === 2) ? '' : '?';
                 if (isgmtTraversed) {
                     gmtCorrection = zCorrectTemp;
@@ -73,22 +70,18 @@ var DateParser = /** @class */ (function () {
                 }
                 switch (char) {
                     case 'E':
-                    case 'c':
-                        // eslint-disable-next-line
+                    case 'c': {
                         var weekData = void 0;
                         if (isBlazor()) {
-                            // eslint-disable-next-line
-                            weekData = getValue('days.' + base.monthIndex[len], dependable.dateObject);
+                            weekData = getValue('days.' + base.monthIndex["" + len], dependable.dateObject);
                         }
                         else {
-                            // eslint-disable-next-line
-                            weekData = dependable.dateObject[base.days][standalone][base.monthIndex[len]];
+                            weekData = dependable.dateObject["" + base.days]["" + standalone][base.monthIndex["" + len]];
                         }
-                        // eslint-disable-next-line
                         var weekObject = parser.reverseObject(weekData);
-                        // tslint:enable
                         regexString += '(' + Object.keys(weekObject).join('|') + ')';
                         break;
+                    }
                     case 'M':
                     case 'L':
                     case 'd':
@@ -101,17 +94,13 @@ var DateParser = /** @class */ (function () {
                         if ((char === 'M' || char === 'L') && len > 2) {
                             var monthData = void 0;
                             if (isBlazor()) {
-                                // eslint-disable-next-line
-                                monthData = getValue('months.' + base.monthIndex[len], dependable.dateObject);
+                                monthData = getValue('months.' + base.monthIndex["" + len], dependable.dateObject);
                             }
                             else {
-                                // eslint-disable-next-line
-                                monthData = dependable.dateObject[month][standalone][base.monthIndex[len]];
+                                monthData = dependable.dateObject["" + month]["" + standalone][base.monthIndex["" + len]];
                             }
-                            // eslint-disable-next-line
-                            parseOptions[charKey] = parser.reverseObject(monthData);
-                            // eslint-disable-next-line
-                            regexString += '(' + Object.keys(parseOptions[charKey]).join('|') + ')';
+                            parseOptions["" + charKey] = parser.reverseObject(monthData);
+                            regexString += '(' + Object.keys(parseOptions["" + charKey]).join('|') + ')';
                         }
                         else if (char === 'f') {
                             if (len > 3) {
@@ -128,11 +117,11 @@ var DateParser = /** @class */ (function () {
                             parseOptions.hour12 = true;
                         }
                         break;
-                    case 'W':
-                        // eslint-disable-next-line
+                    case 'W': {
                         var opt = len === 1 ? '?' : '';
                         regexString += '(' + nRegx + opt + nRegx + ')';
                         break;
+                    }
                     case 'y':
                         canUpdate = isNumber = true;
                         if (len === 2) {
@@ -142,48 +131,41 @@ var DateParser = /** @class */ (function () {
                             regexString += '(' + nRegx + '{' + len + ',})';
                         }
                         break;
-                    case 'a':
+                    case 'a': {
                         canUpdate = true;
-                        // eslint-disable-next-line
                         var periodValur = isBlazor() ?
                             getValue('dayPeriods', dependable.dateObject) :
                             getValue('dayPeriods.format.wide', dependable.dateObject);
-                        // eslint-disable-next-line
-                        parseOptions[charKey] = parser.reverseObject(periodValur);
-                        // eslint-disable-next-line
-                        regexString += '(' + Object.keys(parseOptions[charKey]).join('|') + ')';
+                        parseOptions["" + charKey] = parser.reverseObject(periodValur);
+                        regexString += '(' + Object.keys(parseOptions["" + charKey]).join('|') + ')';
                         break;
-                    case 'G':
+                    }
+                    case 'G': {
                         canUpdate = true;
-                        // eslint-disable-next-line
                         var eText = (len <= 3) ? 'eraAbbr' : (len === 4) ? 'eraNames' : 'eraNarrow';
-                        // eslint-disable-next-line
-                        parseOptions[charKey] = parser.reverseObject(isBlazor() ?
+                        parseOptions["" + charKey] = parser.reverseObject(isBlazor() ?
                             getValue('eras', dependable.dateObject) : getValue('eras.' + eText, dependable.dateObject));
-                        // eslint-disable-next-line
-                        regexString += '(' + Object.keys(parseOptions[charKey]).join('|') + '?)';
+                        regexString += '(' + Object.keys(parseOptions["" + charKey]).join('|') + '?)';
                         break;
-                    case 'z':
-                        // eslint-disable-next-line
+                    }
+                    case 'z': {
                         var tval = new Date().getTimezoneOffset();
                         canUpdate = (tval !== 0);
-                        // eslint-disable-next-line
-                        parseOptions[charKey] = getValue('dates.timeZoneNames', dependable.parserObject);
-                        // eslint-disable-next-line
-                        var tzone = parseOptions[charKey];
+                        parseOptions["" + charKey] = getValue('dates.timeZoneNames', dependable.parserObject);
+                        var tzone = parseOptions["" + charKey];
                         hourOnly = (len < 4);
-                        // eslint-disable-next-line
                         var hpattern = hourOnly ? '+H;-H' : tzone.hourFormat;
                         hpattern = hpattern.replace(/:/g, numMapper.timeSeparator);
                         regexString += '(' + this.parseTimeZoneRegx(hpattern, tzone, nRegx) + ')?';
                         isgmtTraversed = true;
                         zCorrectTemp = hourOnly ? 6 : 12;
                         break;
-                    case '\'':
-                        // eslint-disable-next-line
+                    }
+                    case '\'': {
                         var iString = str.replace(/'/g, '');
                         regexString += '(' + iString + ')?';
                         break;
+                    }
                     default:
                         regexString += '([\\D])';
                         break;
@@ -215,7 +197,6 @@ var DateParser = /** @class */ (function () {
                 if (is2DigitYear) {
                     tYear = parseInt((dobj.year + '').slice(0, 2) + ystrig, 10);
                 }
-                // tslint:disable-next-line
                 var dateObject = HijriParser.toGregorian(tYear || dobj.year, tMonth || dobj.month, tDate || dobj.date);
                 parsedDateParts.year = dateObject.getFullYear();
                 parsedDateParts.month = dateObject.getMonth() + 1;
@@ -224,7 +205,6 @@ var DateParser = /** @class */ (function () {
             return _this.getDateObject(parsedDateParts);
         };
     };
-    /* tslint:disable */
     /**
      * Returns date object for provided date options
      *
@@ -249,8 +229,7 @@ var DateParser = /** @class */ (function () {
         }
         for (var _i = 0, tKeys_1 = tKeys; _i < tKeys_1.length; _i++) {
             var key = tKeys_1[_i];
-            // eslint-disable-next-line
-            var tValue = options[key];
+            var tValue = options["" + key];
             if (isUndefined(tValue) && key === 'day') {
                 res.setDate(1);
             }
@@ -262,8 +241,7 @@ var DateParser = /** @class */ (function () {
                     }
                     var pDate = res.getDate();
                     res.setDate(1);
-                    // eslint-disable-next-line
-                    res[timeSetter[key]](tValue);
+                    res[timeSetter["" + key]](tValue);
                     var lDate = new Date(res.getFullYear(), tValue + 1, 0).getDate();
                     res.setDate(pDate < lDate ? pDate : lDate);
                 }
@@ -274,8 +252,7 @@ var DateParser = /** @class */ (function () {
                             return null;
                         }
                     }
-                    // eslint-disable-next-line
-                    res[timeSetter[key]](tValue);
+                    res["" + timeSetter["" + key]](tValue);
                 }
             }
         }
@@ -317,8 +294,7 @@ var DateParser = /** @class */ (function () {
                 var curObject = parseOptions.evalposition["" + prop];
                 var matchString = matches[curObject.pos];
                 if (curObject.isNumber) {
-                    // eslint-disable-next-line
-                    retOptions[prop] = this.internalNumberParser(matchString, num);
+                    retOptions["" + prop] = this.internalNumberParser(matchString, num);
                 }
                 else {
                     if (prop === 'timeZone' && !isUndefined(matchString)) {
@@ -338,12 +314,12 @@ var DateParser = /** @class */ (function () {
                         }
                     }
                     else {
-                        // eslint-disable-next-line
+                        var cultureOptions = ['en-US', 'en-MH', 'en-MP'];
                         matchString = ((prop === 'month') && (!parseOptions.isIslamic) && (parseOptions.culture === 'en' || parseOptions.culture === 'en-GB' || parseOptions.culture === 'en-US'))
                             ? matchString[0].toUpperCase() + matchString.substring(1).toLowerCase() : matchString;
-                        matchString = ((prop !== 'month') && (prop === 'designator') && parseOptions.culture === 'en-GB') ? matchString.toLowerCase() : matchString;
-                        // eslint-disable-next-line
-                        retOptions[prop] = parseOptions[prop][matchString];
+                        matchString = ((prop !== 'month') && (prop === 'designator') && parseOptions.culture && parseOptions.culture.indexOf('en-') !== -1 && cultureOptions.indexOf(parseOptions.culture) === -1)
+                            ? matchString.toLowerCase() : matchString;
+                        retOptions["" + prop] = parseOptions["" + prop]["" + matchString];
                     }
                 }
             }
@@ -379,7 +355,6 @@ var DateParser = /** @class */ (function () {
         var pattern = tZone.gmtFormat;
         var ret;
         var cRegex = '(' + nRegex + ')' + '(' + nRegex + ')';
-        var splitStr;
         ret = hourFormat.replace('+', '\\+');
         if (hourFormat.indexOf('HH') !== -1) {
             ret = ret.replace(/HH|mm/g, '(' + cRegex + ')');
@@ -387,8 +362,7 @@ var DateParser = /** @class */ (function () {
         else {
             ret = ret.replace(/H|m/g, '(' + cRegex + '?)');
         }
-        // eslint-disable-next-line
-        splitStr = (ret.split(';').map(function (str) {
+        var splitStr = (ret.split(';').map(function (str) {
             return pattern.replace('{0}', str);
         }));
         ret = splitStr.join('|') + '|' + tZone.gmtZeroFormat;

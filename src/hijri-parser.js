@@ -1,7 +1,7 @@
 /***
  * Hijri parser
  */
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export var HijriParser;
 (function (HijriParser) {
     var dateCorrection = [28607, 28636, 28665, 28695, 28724, 28754, 28783, 28813, 28843, 28872, 28901, 28931, 28960, 28990,
@@ -117,7 +117,7 @@ export var HijriParser;
             tYear -= 1;
             tMonth += 12;
         }
-        var yPrefix = Math.floor(tYear / 100.);
+        var yPrefix = Math.floor(tYear / 100);
         var julilanOffset = yPrefix - Math.floor(yPrefix / 4.) - 2;
         var julianNumber = Math.floor(365.25 * (tYear + 4716)) + Math.floor(30.6001 * (tMonth + 1)) + day - julilanOffset - 1524;
         yPrefix = Math.floor((julianNumber - 1867216.25) / 36524.25);
@@ -136,7 +136,7 @@ export var HijriParser;
         year = c - 4716;
         var modifiedJulianDate = julianNumber - 2400000;
         // date calculation for year after 2077
-        var iyear = 10631. / 30.;
+        var iyear = 10631 / 30;
         var z = julianNumber - 1948084;
         var cyc = Math.floor(z / 10631.);
         z = z - 10631 * cyc;

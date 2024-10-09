@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Template Engine
  */
@@ -65,9 +66,8 @@ export function compile(template, helper, ignorePrefix) {
     else {
         var argName = 'data';
         var evalExpResult = evalExp(template, argName, helper, ignorePrefix);
-        // eslint-disable-next-line
         var condtion = "var valueRegEx = (/value=\\'([A-Za-z0-9 _]*)((.)([\\w)(!-;?-\u25A0\\s]+)['])/g);\n        var hrefRegex = (/(?:href)([\\s='\"./]+)([\\w-./?=&\\\\#\"]+)((.)([\\w)(!-;/?-\u25A0\\s]+)['])/g);\n        if(str.match(valueRegEx)){\n            var check = str.match(valueRegEx);\n            var str1 = str;\n            for (var i=0; i < check.length; i++) {\n                var check1 = str.match(valueRegEx)[i].split('value=')[1];\n                var change = check1.match(/^'/) !== null ? check1.replace(/^'/, '\"') : check1;\n                change =change.match(/.$/)[0] === '\\'' ? change.replace(/.$/,'\"') : change;\n                str1 = str1.replace(check1, change);\n            }\n            str = str.replace(str, str1);\n        }\n        else if (str.match(/(?:href='')/) === null) {\n            if(str.match(hrefRegex)) {\n                var check = str.match(hrefRegex);\n                var str1 = str;\n                for (var i=0; i < check.length; i++) {\n                    var check1 = str.match(hrefRegex)[i].split('href=')[1];\n                    if (check1) {\n                        var change = check1.match(/^'/) !== null ? check1.replace(/^'/, '\"') : check1;\n                        change =change.match(/.$/)[0] === '\\'' ? change.replace(/.$/,'\"') : change;\n                        str1 = str1.replace(check1, change);\n                    }\n                }\n                str = str.replace(str, str1);\n            }\n        }\n        ";
-        var fnCode = 'var str=\"' + evalExpResult + '\";' + condtion + ' return str;';
+        var fnCode = 'var str="' + evalExpResult + '";' + condtion + ' return str;';
         var fn = new Function(argName, fnCode);
         return fn.bind(helper);
     }
@@ -94,9 +94,24 @@ function evalExp(str, nameSpace, helper, ignorePrefix) {
             str = str.replace(value, singleSpace);
         });
     }
-    return str.replace(LINES, '').replace(DBL_QUOTED_STR, '\'$1\'').replace(exp, 
-    // eslint-disable-next-line
-    function (match, cnt, offset, matchStr) {
+    if (exp.test(str)) {
+        var insideBraces = false;
+        var outputString = '';
+        for (var i = 0; i < str.length; i++) {
+            if (str[i + ''] === '$' && str[i + 1] === '{') {
+                insideBraces = true;
+            }
+            else if (str[i + ''] === '}') {
+                insideBraces = false;
+            }
+            outputString += (str[i + ''] === '"' && !insideBraces) ? '\\"' : str[i + ''];
+        }
+        str = outputString;
+    }
+    else {
+        str = str.replace(/\\?"/g, '\\"');
+    }
+    return str.replace(LINES, '').replace(DBL_QUOTED_STR, '\'$1\'').replace(exp, function (match, cnt, offset, matchStr) {
         var SPECIAL_CHAR = /@|#|\$/gm;
         var matches = cnt.match(CALL_FUNCTION);
         // matches to detect any function calls
@@ -119,12 +134,10 @@ function evalExp(str, nameSpace, helper, ignorePrefix) {
                 //handling for condition
                 var rlStr_1 = matches[1].split(' of ');
                 // replace for each into actual JavaScript
-                // eslint-disable-next-line
                 cnt = '"; ' + cnt.replace(matches[1], function (mtc) {
                     localKeys.push(rlStr_1[0]);
                     localKeys.push(rlStr_1[0] + 'Index');
                     varCOunt = varCOunt + 1;
-                    // tslint:disable-next-line
                     return 'var i' + varCOunt + '=0; i' + varCOunt + ' < ' + addNameSpace(rlStr_1[1], true, nameSpace, localKeys, ignorePrefix) + '.length; i' + varCOunt + '++';
                 }) + '{ \n ' + rlStr_1[0] + '= ' + addNameSpace(rlStr_1[1], true, nameSpace, localKeys, ignorePrefix)
                     + '[i' + varCOunt + ']; \n var ' + rlStr_1[0] + 'Index=i' + varCOunt + '; \n str = str + "';
@@ -132,8 +145,7 @@ function evalExp(str, nameSpace, helper, ignorePrefix) {
             else {
                 //helper function handling
                 var fnStr = cnt.split('(');
-                // eslint-disable-next-line
-                var fNameSpace = (helper && helper.hasOwnProperty(fnStr[0]) ? 'this.' : 'global');
+                var fNameSpace = (helper && Object.prototype.hasOwnProperty.call(helper, fnStr[0]) ? 'this.' : 'global');
                 fNameSpace = (/\./.test(fnStr[0]) ? '' : fNameSpace);
                 var ftArray = matches[1].split(',');
                 if (matches[1].length !== 0 && !(/data/).test(ftArray[0]) && !(/window./).test(ftArray[0])) {
@@ -144,7 +156,6 @@ function evalExp(str, nameSpace, helper, ignorePrefix) {
                 if (WINDOWFUNC.test(cnt) && arrObj.test(cnt) || splRegexp.test(cnt)) {
                     var splArrRegexp = /@|\$|#|\]\./gm;
                     if (splArrRegexp.test(cnt)) {
-                        // tslint:disable-next-line
                         cnt = '"+ ' + (fNameSpace === 'global' ? '' : fNameSpace) + cnt.replace(matches[1], rlStr.replace(WORDFUNC, function (strs) {
                             return HandleSpecialCharArrObj(strs, nameSpace, localKeys, ignorePrefix);
                         })) + '+ "';
@@ -160,9 +171,8 @@ function evalExp(str, nameSpace, helper, ignorePrefix) {
         else if (ELSE_STMT.test(cnt)) {
             // handling else condition
             cnt = '"; ' + cnt.replace(ELSE_STMT, '} else { \n str = str + "');
-            // eslint-disable-next-line
         }
-        else if (!!cnt.match(IF_OR_FOR)) {
+        else if (cnt.match(IF_OR_FOR)) {
             // close condition
             cnt = cnt.replace(IF_OR_FOR, '"; \n } \n str = str + "');
         }
@@ -197,7 +207,7 @@ function evalExp(str, nameSpace, helper, ignorePrefix) {
  * @returns {string} ?
  */
 function addNameSpace(str, addNS, nameSpace, ignoreList, ignorePrefix) {
-    return ((addNS && !(NOT_NUMBER.test(str)) && ignoreList.indexOf(str.split('.')[0]) === -1 && !ignorePrefix && str !== "true" && str !== "false") ? nameSpace + '.' + str : str);
+    return ((addNS && !(NOT_NUMBER.test(str)) && ignoreList.indexOf(str.split('.')[0]) === -1 && !ignorePrefix && str !== 'true' && str !== 'false') ? nameSpace + '.' + str : str);
 }
 /**
  *
@@ -227,17 +237,20 @@ function NameSpaceArrObj(str, addNS, nameSpace, ignoreList) {
 function NameSpaceForspecialChar(str, addNS, nameSpace, ignoreList) {
     return ((addNS && !(NOT_NUMBER.test(str)) && ignoreList.indexOf(str.split('.')[0]) === -1) ? nameSpace + '["' + str : str);
 }
-// eslint-disable-next-line
+/**
+ * Replace double slashes to single slash.
+ *
+ * @param {string} tempStr ?
+ * @returns {any} ?
+ */
 function SlashReplace(tempStr) {
     var double = '\\\\';
     if (tempStr.match(DOUBLE_SLASH)) {
-        // eslint-disable-next-line
-        tempStr = tempStr;
+        return tempStr;
     }
     else {
-        tempStr = tempStr.replace(SINGLE_SLASH, double);
+        return tempStr.replace(SINGLE_SLASH, double);
     }
-    return tempStr;
 }
 /**
  *

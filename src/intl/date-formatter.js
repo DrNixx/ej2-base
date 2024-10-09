@@ -33,7 +33,6 @@ export var datePartMatcher = {
     'f': 'milliseconds'
 };
 var timeSeparator = 'timeSeparator';
-/* tslint:disable no-any */
 /**
  * Date Format is a framework provides support for date formatting.
  *
@@ -85,34 +84,30 @@ var DateFormat = /** @class */ (function () {
                     case 'E':
                     case 'c':
                         if (isBlazor()) {
-                            // eslint-disable-next-line
-                            formatOptions.weekday = getValue('days.' + base.monthIndex[len], dateObject);
+                            formatOptions.weekday = getValue('days.' + base.monthIndex["" + len], dateObject);
                         }
                         else {
-                            // eslint-disable-next-line
-                            formatOptions.weekday = dependable.dateObject[base.days][standalone][base.monthIndex[len]];
+                            formatOptions.weekday = dependable.dateObject["" + base.days]["" + standalone][base.monthIndex["" + len]];
                         }
                         break;
                     case 'M':
                     case 'L':
                         if (isBlazor()) {
-                            // eslint-disable-next-line
-                            formatOptions.month = getValue('months.' + base.monthIndex[len], dateObject);
+                            formatOptions.month = getValue('months.' + base.monthIndex["" + len], dateObject);
                         }
                         else {
-                            // eslint-disable-next-line
-                            formatOptions.month = dependable.dateObject[base.month][standalone][base.monthIndex[len]];
+                            formatOptions.month = dependable.dateObject["" + base.month]["" + standalone][base.monthIndex["" + len]];
                         }
                         break;
                     case 'a':
                         formatOptions.designator = isBlazor() ?
                             getValue('dayPeriods', dateObject) : getValue('dayPeriods.format.wide', dateObject);
                         break;
-                    case 'G':
-                        // eslint-disable-next-line
+                    case 'G': {
                         var eText = (len <= 3) ? 'eraAbbr' : (len === 4) ? 'eraNames' : 'eraNarrow';
                         formatOptions.era = isBlazor() ? getValue('eras', dateObject) : getValue('eras.' + eText, dependable.dateObject);
                         break;
+                    }
                     case 'z':
                         formatOptions.timeZone = getValue('dates.timeZoneNames', dependable.parserObject);
                         break;
@@ -155,8 +150,7 @@ var DateFormat = /** @class */ (function () {
                 case 'L':
                     curval = dObject.month;
                     if (length_1 > 2) {
-                        // eslint-disable-next-line
-                        ret += options.month[curval];
+                        ret += options.month["" + curval];
                     }
                     else {
                         isNumber = true;
@@ -164,8 +158,7 @@ var DateFormat = /** @class */ (function () {
                     break;
                 case 'E':
                 case 'c':
-                    // eslint-disable-next-line
-                    ret += options.weekday[weekdayKey[value.getDay()]];
+                    ret += options.weekday["" + weekdayKey[value.getDay()]];
                     break;
                 case 'H':
                 case 'h':
@@ -180,8 +173,7 @@ var DateFormat = /** @class */ (function () {
                     else if (char === 'f') {
                         isNumber = false;
                         processNumber = true;
-                        // eslint-disable-next-line
-                        curvalstr = value[timeSetter[char]]().toString();
+                        curvalstr = value["" + timeSetter["" + char]]().toString();
                         curvalstr = curvalstr.substring(0, length_1);
                         var curlength = curvalstr.length;
                         if (length_1 !== curlength) {
@@ -195,8 +187,7 @@ var DateFormat = /** @class */ (function () {
                         curstr += curvalstr;
                     }
                     else {
-                        // eslint-disable-next-line
-                        curval = value[timeSetter[char]]();
+                        curval = value["" + timeSetter["" + char]]();
                     }
                     if (char === 'h') {
                         curval = curval % 12 || 12;
@@ -209,30 +200,25 @@ var DateFormat = /** @class */ (function () {
                         curstr = curstr.substr(curstr.length - 2);
                     }
                     break;
-                case 'a':
-                    // eslint-disable-next-line
+                case 'a': {
                     var desig = value.getHours() < 12 ? 'am' : 'pm';
-                    // eslint-disable-next-line
-                    ret += options.designator[desig];
+                    ret += options.designator["" + desig];
                     break;
-                case 'G':
-                    // eslint-disable-next-line
+                }
+                case 'G': {
                     var dec = value.getFullYear() < 0 ? 0 : 1;
-                    // eslint-disable-next-line
-                    var retu = options.era[dec];
+                    var retu = options.era["" + dec];
                     if (isNullOrUndefined(retu)) {
-                        // eslint-disable-next-line
                         retu = options.era[dec ? 0 : 1];
                     }
                     ret += retu || '';
                     break;
+                }
                 case '\'':
                     ret += (match === '\'\'') ? '\'' : match.replace(/'/g, '');
                     break;
-                case 'z':
-                    // eslint-disable-next-line
+                case 'z': {
                     var timezone = value.getTimezoneOffset();
-                    // eslint-disable-next-line
                     var pattern_1 = (length_1 < 4) ? '+H;-H' : options.timeZone.hourFormat;
                     pattern_1 = pattern_1.replace(/:/g, options.numMapper.timeSeparator);
                     if (timezone === 0) {
@@ -244,9 +230,9 @@ var DateFormat = /** @class */ (function () {
                     }
                     curstr = options.timeZone.gmtFormat.replace(/\{0\}/, curstr);
                     break;
+                }
                 case ':':
-                    // eslint-disable-next-line
-                    ret += options.numMapper.numberSymbols[timeSeparator];
+                    ret += options.numMapper.numberSymbols["" + timeSeparator];
                     break;
                 case '/':
                     ret += options.dateSeperator;

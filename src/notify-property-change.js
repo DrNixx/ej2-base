@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createInstance, isUndefined, merge, extend, getValue } from './util';
 /**
  * Returns the Class Object
@@ -8,10 +9,8 @@ import { createInstance, isUndefined, merge, extend, getValue } from './util';
  * @param {Object[]} type ?
  * @returns {ClassObject} ?
  */
-// eslint-disable-next-line
 function getObject(instance, curKey, defaultValue, type) {
-    // eslint-disable-next-line
-    if (!instance.properties.hasOwnProperty(curKey) || !(instance.properties[curKey] instanceof type)) {
+    if (!Object.prototype.hasOwnProperty.call(instance.properties, curKey) || !(instance.properties["" + curKey] instanceof type)) {
         instance.properties["" + curKey] = createInstance(type, [instance, curKey, defaultValue]);
     }
     return instance.properties["" + curKey];
@@ -27,7 +26,6 @@ function getObject(instance, curKey, defaultValue, type) {
  * @param {boolean} isFactory ?
  * @returns {Object[]} ?
  */
-// eslint-disable-next-line
 function getObjectArray(instance, curKey, defaultValue, type, isSetter, isFactory) {
     var result = [];
     var len = defaultValue ? defaultValue.length : 0;
@@ -56,8 +54,7 @@ function getObjectArray(instance, curKey, defaultValue, type, isSetter, isFactor
  */
 function propertyGetter(defaultValue, curKey) {
     return function () {
-        // eslint-disable-next-line
-        if (!this.properties.hasOwnProperty(curKey)) {
+        if (!Object.prototype.hasOwnProperty.call(this.properties, curKey)) {
             this.properties["" + curKey] = defaultValue;
         }
         return this.properties["" + curKey];
@@ -73,8 +70,7 @@ function propertyGetter(defaultValue, curKey) {
 function propertySetter(defaultValue, curKey) {
     return function (newValue) {
         if (this.properties["" + curKey] !== newValue) {
-            // eslint-disable-next-line
-            var oldVal = this.properties.hasOwnProperty(curKey) ? this.properties[curKey] : defaultValue;
+            var oldVal = Object.prototype.hasOwnProperty.call(this.properties, curKey) ? this.properties["" + curKey] : defaultValue;
             this.saveChanges(curKey, newValue, oldVal);
             this.properties["" + curKey] = newValue;
         }
@@ -88,7 +84,6 @@ function propertySetter(defaultValue, curKey) {
  * @param {Object[]} type ?
  * @returns {void} ?
  */
-// eslint-disable-next-line
 function complexGetter(defaultValue, curKey, type) {
     return function () {
         return getObject(this, curKey, defaultValue, type);
@@ -114,12 +109,10 @@ function complexSetter(defaultValue, curKey, type) {
  * @param {FunctionConstructor} type ?
  * @returns {void} ?
  */
-// eslint-disable-next-line
 function complexFactoryGetter(defaultValue, curKey, type) {
     return function () {
         var curType = type({});
-        // eslint-disable-next-line
-        if (this.properties.hasOwnProperty(curKey)) {
+        if (Object.prototype.hasOwnProperty.call(this.properties, curKey)) {
             return this.properties["" + curKey];
         }
         else {
@@ -150,15 +143,13 @@ function complexFactorySetter(defaultValue, curKey, type) {
 function complexArrayGetter(defaultValue, curKey, type) {
     return function () {
         var _this = this;
-        // eslint-disable-next-line
-        if (!this.properties.hasOwnProperty(curKey)) {
+        if (!Object.prototype.hasOwnProperty.call(this.properties, curKey)) {
             var defCollection = getObjectArray(this, curKey, defaultValue, type, false);
             this.properties["" + curKey] = defCollection;
         }
         var ignore = ((this.controlParent !== undefined && this.controlParent.ignoreCollectionWatch)
             || this.ignoreCollectionWatch);
-        // eslint-disable-next-line
-        if (!this.properties[curKey].hasOwnProperty('push') && !ignore) {
+        if (!Object.prototype.hasOwnProperty.call(this.properties["" + curKey], 'push') && !ignore) {
             ['push', 'pop'].forEach(function (extendFunc) {
                 var descriptor = {
                     value: complexArrayDefinedCallback(extendFunc, curKey, type, _this.properties["" + curKey]).bind(_this),
@@ -167,8 +158,7 @@ function complexArrayGetter(defaultValue, curKey, type) {
                 Object.defineProperty(_this.properties["" + curKey], extendFunc, descriptor);
             });
         }
-        // eslint-disable-next-line
-        if (!this.properties[curKey].hasOwnProperty('isComplexArray')) {
+        if (!Object.prototype.hasOwnProperty.call(this.properties["" + curKey], 'isComplexArray')) {
             Object.defineProperty(this.properties["" + curKey], 'isComplexArray', { value: true });
         }
         return this.properties["" + curKey];
@@ -200,8 +190,7 @@ function complexArraySetter(defaultValue, curKey, type) {
  */
 function complexArrayFactorySetter(defaultValue, curKey, type) {
     return function (newValue) {
-        // eslint-disable-next-line
-        var oldValueCollection = this.properties.hasOwnProperty(curKey) ? this.properties[curKey] : defaultValue;
+        var oldValueCollection = Object.prototype.hasOwnProperty.call(this.properties, curKey) ? this.properties["" + curKey] : defaultValue;
         var newValCollection = getObjectArray(this, curKey, newValue, type, true, true);
         this.saveChanges(curKey, newValCollection, oldValueCollection);
         this.properties["" + curKey] = newValCollection;
@@ -217,8 +206,7 @@ function complexArrayFactorySetter(defaultValue, curKey, type) {
 function complexArrayFactoryGetter(defaultValue, curKey, type) {
     return function () {
         var curType = type({});
-        // eslint-disable-next-line
-        if (!this.properties.hasOwnProperty(curKey)) {
+        if (!Object.prototype.hasOwnProperty.call(this.properties, curKey)) {
             var defCollection = getObjectArray(this, curKey, defaultValue, curType, false);
             this.properties["" + curKey] = defCollection;
         }
@@ -234,7 +222,6 @@ function complexArrayFactoryGetter(defaultValue, curKey, type) {
  * @returns {Object} ?
  */
 function complexArrayDefinedCallback(dFunc, curKey, type, prop) {
-    /* tslint:disable no-function-expression */
     return function () {
         var newValue = [];
         for (var _i = 0; _i < arguments.length; _i++) {
@@ -244,17 +231,18 @@ function complexArrayDefinedCallback(dFunc, curKey, type, prop) {
         switch (dFunc) {
             case 'push':
                 for (var i = 0; i < newValue.length; i++) {
-                    Array.prototype["" + dFunc].apply(prop, [newValue[parseInt(i.toString(), 10)]]);
-                    var model_1 = getArrayModel(keyString + (prop.length - 1), newValue[parseInt(i.toString(), 10)], !this.controlParent, dFunc);
-                    this.serverDataBind(model_1, newValue[parseInt(i.toString(), 10)], false, dFunc);
+                    var newValueParse = newValue[parseInt(i.toString(), 10)];
+                    Array.prototype["" + dFunc].apply(prop, [newValueParse]);
+                    var model = getArrayModel(keyString + (prop.length - 1), newValueParse, !this.controlParent, dFunc);
+                    this.serverDataBind(model, newValue[parseInt(i.toString(), 10)], false, dFunc);
                 }
                 break;
-            case 'pop':
+            case 'pop': {
                 Array.prototype["" + dFunc].apply(prop);
-                // eslint-disable-next-line
                 var model = getArrayModel(keyString + prop.length, null, !this.controlParent, dFunc);
                 this.serverDataBind(model, { ejsAction: 'pop' }, false, dFunc);
                 break;
+            }
         }
         return prop;
     };
@@ -279,16 +267,11 @@ function getArrayModel(keyString, value, isControlParent, arrayFunction) {
     }
     return modelObject;
 }
-// eslint-disable-next-line
 /**
  * Method used to create property. General syntax below.
  *
  * @param {Object} defaultValue - Specifies the default value of property.
  * @returns {PropertyDecorator} ?
- * ```
- * @Property('TypeScript')
- * propertyName: Type;
- * ```
  * @private
  */
 export function Property(defaultValue) {
@@ -438,25 +421,8 @@ export function Event() {
  *
  * @param {Function} classConstructor ?
  * @returns {void} ?
- * ```
- *  @NotifyPropertyChanges
- * class DemoClass implements INotifyPropertyChanged {
- *
- *     @Property()
- *     property1: string;
- *
- *     dataBind: () => void;
- *
- *     constructor() { }
- *
- *     onPropertyChanged(newProp: any, oldProp: any) {
- *         // Called when property changed
- *     }
- * }
- * ```
  * @private
  */
-// eslint-disable-next-line
 export function NotifyPropertyChanges(classConstructor) {
     /** Need to code */
 }
@@ -484,13 +450,11 @@ function addPropertyCollection(target, key, propertyType, defaultValue, type) {
             eventNames: []
         };
     }
-    // eslint-disable-next-line
     target.propList[propertyType + 's'].push({
         propertyName: key,
         defaultValue: defaultValue,
         type: type
     });
-    // eslint-disable-next-line
     target.propList[propertyType + 'Names'].push(key);
 }
 /**
@@ -559,8 +523,7 @@ export function CreateBuilder(component) {
         return this;
     };
     var instanceFunction = function (element) {
-        // eslint-disable-next-line
-        if (!builderFunction.prototype.hasOwnProperty('create')) {
+        if (!Object.prototype.hasOwnProperty.call(builderFunction, 'create')) {
             builderFunction.prototype = getBuilderProperties(component);
             builderFunction.prototype.create = function () {
                 var temp = extend({}, {}, this.properties);
@@ -581,8 +544,7 @@ export function CreateBuilder(component) {
  * @private
  */
 function getParentContext(context, prefix) {
-    // eslint-disable-next-line
-    if (context.hasOwnProperty('parentObj') === false) {
+    if (Object.prototype.hasOwnProperty.call(context, 'parentObj') === false) {
         return { context: context, prefix: prefix };
     }
     else {

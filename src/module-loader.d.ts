@@ -11,6 +11,10 @@ export interface ModuleDeclaration {
      */
     member: string;
     /**
+     * Specifies the name for module declaration.
+     */
+    name?: string;
+    /**
      * Specifies whether it is a property or not.
      */
     isProperty?: boolean;
@@ -36,6 +40,14 @@ export declare class ModuleLoader {
      * @returns {void}
      */
     clean(): void;
+    /**
+     * Returns the array of modules that are not loaded in the component library.
+     *
+     * @param {ModuleDeclaration[]} requiredModules - Array of modules to be required
+     * @returns {ModuleDeclaration[]} ?
+     * @private
+     */
+    getNonInjectedModules(requiredModules: ModuleDeclaration[]): ModuleDeclaration[];
     /**
      * Removes all unused modules
      *

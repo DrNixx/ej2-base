@@ -2,7 +2,7 @@ import { extend, isNullOrUndefined, isBlazor, getValue } from '../util';
 import { ParserBase as parser } from './parser-base';
 import { IntlBase as base } from './intl-base';
 var regExp = RegExp;
-var parseRegex = new regExp('^([^0-9]*)' + '(([0-9,]*[0-9]+)(\.[0-9]+)?)' + '([Ee][+-]?[0-9]+)?([^0-9]*)$');
+var parseRegex = new regExp('^([^0-9]*)' + '(([0-9,]*[0-9]+)(.[0-9]+)?)' + '([Ee][+-]?[0-9]+)?([^0-9]*)$');
 var groupRegex = /,/g;
 var keys = ['minusSign', 'infinity'];
 /**
@@ -25,7 +25,6 @@ var NumberParser = /** @class */ (function () {
         var _this = this;
         var dependable = base.getDependables(cldr, culture, '', true);
         var parseOptions = { custom: true };
-        var numOptions;
         if ((base.formatRegex.test(option.format)) || !(option.format)) {
             extend(parseOptions, base.getProperNumericSkeleton(option.format || 'N'));
             parseOptions.custom = false;
@@ -39,10 +38,8 @@ var NumberParser = /** @class */ (function () {
             extend(parseOptions, base.customFormat(option.format, null, null));
         }
         var numbers = getValue('numbers', dependable.parserObject);
-        // eslint-disable-next-line
-        numOptions = parser.getCurrentNumericOptions(dependable.parserObject, parser.getNumberingSystem(cldr), true, isBlazor());
+        var numOptions = parser.getCurrentNumericOptions(dependable.parserObject, parser.getNumberingSystem(cldr), true, isBlazor());
         parseOptions.symbolRegex = parser.getSymbolRegex(Object.keys(numOptions.symbolMatch));
-        // eslint-disable-next-line
         parseOptions.infinity = numOptions.symbolNumberSystem[keys[1]];
         var symbolpattern;
         if (!isBlazor()) {

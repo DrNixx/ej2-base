@@ -361,6 +361,8 @@ export declare class Draggable extends Base<HTMLElement> implements INotifyPrope
     private getDocumentWidthHeight;
     private intDragStop;
     /**
+     * @param {MouseEvent | TouchEvent} evt ?
+     * @returns {void}
      * @private
      */
     intDestroy(evt: MouseEvent & TouchEvent): void;

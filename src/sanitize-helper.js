@@ -2,6 +2,7 @@
  * SanitizeHtmlHelper for sanitize the value.
  */
 import { detach } from './dom';
+import { isNullOrUndefined } from './util';
 var removeTags = [
     'script',
     'style',
@@ -17,6 +18,7 @@ var removeTags = [
 ];
 var removeAttrs = [
     { attribute: 'href', selector: '[href*="javascript:"]' },
+    { attribute: 'href', selector: 'a[href]' },
     { attribute: 'background', selector: '[background^="javascript:"]' },
     { attribute: 'style', selector: '[style*="javascript:"]' },
     { attribute: 'style', selector: '[style*="expression("]' },
@@ -120,6 +122,9 @@ var SanitizeHtmlHelper = /** @class */ (function () {
         };
     };
     SanitizeHtmlHelper.sanitize = function (value) {
+        if (isNullOrUndefined(value)) {
+            return value;
+        }
         var item = this.beforeSanitize();
         var output = this.serializeValue(item, value);
         return output;
@@ -134,6 +139,7 @@ var SanitizeHtmlHelper = /** @class */ (function () {
         this.removeXssAttrs();
         var tempEleValue = this.wrapElement.innerHTML;
         this.removeElement();
+        this.wrapElement = null;
         return tempEleValue.replace(/&amp;/g, '&');
     };
     SanitizeHtmlHelper.removeElement = function () {
@@ -174,13 +180,21 @@ var SanitizeHtmlHelper = /** @class */ (function () {
     };
     SanitizeHtmlHelper.removeXssAttrs = function () {
         var _this = this;
-        // eslint-disable-next-line
         this.removeAttrs.forEach(function (item, index) {
             var elements = _this.wrapElement.querySelectorAll(item.selector);
             if (elements.length > 0) {
-                elements.forEach(function (element) {
-                    element.removeAttribute(item.attribute);
-                });
+                if (item.selector === 'a[href]') {
+                    elements.forEach(function (element) {
+                        if ((element.getAttribute(item.attribute)).replace(/\t|\s|&/, '').indexOf('javascript:alert') !== -1) {
+                            element.removeAttribute(item.attribute);
+                        }
+                    });
+                }
+                else {
+                    elements.forEach(function (element) {
+                        element.removeAttribute(item.attribute);
+                    });
+                }
             }
         });
     };

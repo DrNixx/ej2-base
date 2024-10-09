@@ -108,14 +108,11 @@ var EventHandler = /** @class */ (function () {
      * @returns {void} ?
      */
     EventHandler.clearEvents = function (element) {
-        var eventData;
-        var copyData;
-        // eslint-disable-next-line
-        eventData = EventHandler.addOrGetEventData(element);
-        // eslint-disable-next-line
-        copyData = extend([], copyData, eventData);
+        var eventData = EventHandler.addOrGetEventData(element);
+        var copyData = extend([], undefined, eventData);
         for (var i = 0; i < copyData.length; i++) {
-            element.removeEventListener(copyData[parseInt(i.toString(), 10)].name, copyData[parseInt(i.toString(), 10)].debounce);
+            var parseValue = copyData[parseInt(i.toString(), 10)];
+            element.removeEventListener(parseValue.name, parseValue.debounce);
             eventData.shift();
         }
     };

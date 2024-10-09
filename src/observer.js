@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types */
 import { isNullOrUndefined, getValue, extend, isBlazor } from './util';
 var Observer = /** @class */ (function () {
     function Observer(context) {
@@ -23,7 +24,7 @@ var Observer = /** @class */ (function () {
         }
         var cntxt = context || this.context;
         if (this.notExist(property)) {
-            this.boundedEvents["" + property] = [{ handler: handler, context: cntxt }];
+            this.boundedEvents["" + property] = [{ handler: handler, context: cntxt, id: id }];
             return;
         }
         if (!isNullOrUndefined(id)) {
@@ -139,7 +140,6 @@ var Observer = /** @class */ (function () {
             }
         }
     };
-    // eslint-disable-next-line
     Observer.prototype.dateReviver = function (key, value) {
         var dPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/;
         if (isBlazor && typeof value === 'string' && value.match(dPattern) !== null) {
@@ -165,14 +165,33 @@ var Observer = /** @class */ (function () {
         this.boundedEvents = this.context = undefined;
     };
     /**
+     * To remove internationalization events
+     *
+     * @returns {void} ?
+     */
+    Observer.prototype.offIntlEvents = function () {
+        var eventsArr = this.boundedEvents['notifyExternalChange'];
+        if (eventsArr) {
+            for (var i = 0; i < eventsArr.length; i++) {
+                var curContext = eventsArr[parseInt(i.toString(), 10)].context;
+                if (curContext && curContext.detectFunction && curContext.randomId && !curContext.isRendered) {
+                    this.off('notifyExternalChange', curContext.detectFunction, curContext.randomId);
+                    i--;
+                }
+            }
+            if (!this.boundedEvents['notifyExternalChange'].length) {
+                delete this.boundedEvents['notifyExternalChange'];
+            }
+        }
+    };
+    /**
      * Returns if the property exists.
      *
      * @param {string} prop ?
      * @returns {boolean} ?
      */
     Observer.prototype.notExist = function (prop) {
-        // eslint-disable-next-line
-        return this.boundedEvents.hasOwnProperty(prop) === false || this.boundedEvents[prop].length <= 0;
+        return Object.prototype.hasOwnProperty.call(this.boundedEvents, prop) === false || this.boundedEvents["" + prop].length <= 0;
     };
     /**
      * Returns if the handler is present.

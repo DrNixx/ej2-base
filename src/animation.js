@@ -81,7 +81,7 @@ var Animation = /** @class */ (function (_super) {
      *
      * @param {HTMLElement} element - Element which needs to be stop the animation.
      * @param {AnimationOptions} model - Handling the animation model at stop function.
-     * @return {void}
+     * @returns {void}
      */
     Animation.stop = function (element, model) {
         element.style.animation = '';
@@ -211,7 +211,6 @@ var Animation = /** @class */ (function (_super) {
      * @param {AnimationModel} oldProp ?
      * @returns {void} ?
      */
-    // eslint-disable-next-line
     Animation.prototype.onPropertyChanged = function (newProp, oldProp) {
         // no code needed
     };
@@ -401,7 +400,6 @@ function removeRipple(e, eventArgs) {
     if (eventArgs.parent !== element) {
         EventHandler.remove(element, 'mouseleave', rippleLeaveHandler);
     }
-    /* tslint:disable:align */
     setTimeout(function () {
         if (rippleElement && rippleElement.parentNode) {
             rippleElement.parentNode.removeChild(rippleElement);
@@ -446,15 +444,15 @@ export function setGlobalAnimation(value) {
 export var GlobalAnimationMode;
 (function (GlobalAnimationMode) {
     /**
-    * Defines the global animation mode as Default. Animation is enabled or disabled based on the component's animation settings.
-    */
+     * Defines the global animation mode as Default. Animation is enabled or disabled based on the component's animation settings.
+     */
     GlobalAnimationMode["Default"] = "Default";
     /**
-    * Defines the global animation mode as Enable. Enables the animation for all components, regardless of the individual component's animation settings.
-    */
+     * Defines the global animation mode as Enable. Enables the animation for all components, regardless of the individual component's animation settings.
+     */
     GlobalAnimationMode["Enable"] = "Enable";
     /**
-    * Defines the global animation mode as Disable. Disables the animation for all components, regardless of the individual component's animation settings.
-    */
+     * Defines the global animation mode as Disable. Disables the animation for all components, regardless of the individual component's animation settings.
+     */
     GlobalAnimationMode["Disable"] = "Disable";
 })(GlobalAnimationMode || (GlobalAnimationMode = {}));

@@ -1,4 +1,4 @@
-export declare let componentList: string[];
+export declare const componentList: string[];
 /**
  * To set license key.
  *

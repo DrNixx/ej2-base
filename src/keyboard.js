@@ -139,7 +139,6 @@ var KeyboardEvents = /** @class */ (function (_super) {
      * @returns {void} ?
      * @private
      */
-    // eslint-disable-next-line
     KeyboardEvents.prototype.onPropertyChanged = function (newProp, oldProp) {
         // No code are needed
     };

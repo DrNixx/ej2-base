@@ -17,6 +17,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types */
 import { isUndefined, getValue, isNullOrUndefined, setValue, uniqueID, isBlazor } from './util';
 import { ModuleLoader } from './module-loader';
 import { Base } from './base';
@@ -67,6 +68,9 @@ var Component = /** @class */ (function (_super) {
         _this.isStringTemplate = false;
         _this.needsID = false;
         _this.isReactHybrid = false;
+        _this.isAngular = false;
+        _this.isReact = false;
+        _this.isVue = false;
         if (isNullOrUndefined(_this.enableRtl)) {
             _this.setProperties({ 'enableRtl': rightToLeft }, true);
         }
@@ -75,10 +79,9 @@ var Component = /** @class */ (function (_super) {
         }
         _this.moduleLoader = new ModuleLoader(_this);
         _this.localObserver = new Observer(_this);
-        // tslint:disable-next-line:no-function-constructor-with-string-args
         onIntlChange.on('notifyExternalChange', _this.detectFunction, _this, _this.randomId);
         // Based on the considered control list we have count the instance
-        if (typeof window !== "undefined" && typeof document !== "undefined" && !validateLicense()) {
+        if (typeof window !== 'undefined' && typeof document !== 'undefined' && !validateLicense()) {
             if (componentList.indexOf(_this.getModuleName()) !== -1) {
                 instancecount = instancecount + 1;
                 if (instancecount > 5) {
@@ -145,7 +148,6 @@ var Component = /** @class */ (function (_super) {
      */
     Component.prototype.getRootElement = function () {
         if (this.isReactHybrid) {
-            // eslint-disable-next-line
             return this.actualElement;
         }
         else {
@@ -157,7 +159,6 @@ var Component = /** @class */ (function (_super) {
      *
      * @returns {any} ?
      */
-    // eslint-disable-next-line
     Component.prototype.getLocalData = function () {
         var eleId = this.getModuleName() + this.element.id;
         if (versionBasedStatePersistence) {
@@ -169,22 +170,28 @@ var Component = /** @class */ (function (_super) {
     };
     /**
      * Adding unload event to persist data when enable persistence true
+     *
+     * @returns {void}
      */
     Component.prototype.attachUnloadEvent = function () {
         this.handleUnload = this.handleUnload.bind(this);
-        window.addEventListener('unload', this.handleUnload);
+        window.addEventListener('pagehide', this.handleUnload);
     };
     /**
      * Handling unload event to persist data when enable persistence true
+     *
+     * @returns {void}
      */
     Component.prototype.handleUnload = function () {
         this.setPersistData();
     };
     /**
      * Removing unload event to persist data when enable persistence true
+     *
+     * @returns {void}
      */
     Component.prototype.detachUnloadEvent = function () {
-        window.removeEventListener('unload', this.handleUnload);
+        window.removeEventListener('pagehide', this.handleUnload);
     };
     /**
      * Appends the control within the given HTML element
@@ -216,7 +223,33 @@ var Component = /** @class */ (function (_super) {
             }
             this.preRender();
             this.injectModules();
-            // Checked weather cases are valid or not. If control leads to more than five counts  
+            // Throw a warning for the required modules to be injected.
+            var ignoredComponents = {
+                schedule: 'all',
+                diagram: 'all',
+                PdfViewer: 'all',
+                grid: ['logger'],
+                richtexteditor: ['link', 'table', 'image', 'audio', 'video', 'formatPainter', 'emojiPicker', 'pasteCleanup', 'htmlEditor', 'toolbar', 'importExport'],
+                treegrid: ['filter'],
+                gantt: ['tooltip'],
+                chart: ['Export', 'Zoom'],
+                accumulationchart: ['Export'],
+                'query-builder': 'all'
+            };
+            var component = this.getModuleName();
+            if (this.requiredModules && (!ignoredComponents["" + component] || ignoredComponents["" + component] !== 'all')) {
+                var modulesRequired = this.requiredModules();
+                for (var _i = 0, _a = this.moduleLoader.getNonInjectedModules(modulesRequired); _i < _a.length; _i++) {
+                    var module = _a[_i];
+                    var moduleName = module.name ? module.name : module.member;
+                    if (ignoredComponents["" + component] && ignoredComponents["" + component].indexOf(module.member) !== -1) {
+                        continue;
+                    }
+                    var componentName = component.charAt(0).toUpperCase() + component.slice(1); // To capitalize the component name
+                    console.warn("[WARNING] :: Module \"" + moduleName + "\" is not available in " + componentName + " component! You either misspelled the module name or forgot to load it.");
+                }
+            }
+            // Checked weather cases are valid or not. If control leads to more than five counts
             if (!isvalid && !isBannerAdded) {
                 createLicenseOverlay();
                 isBannerAdded = true;
@@ -239,8 +272,7 @@ var Component = /** @class */ (function (_super) {
     Component.prototype.renderComplete = function (wrapperElement) {
         if (isBlazor()) {
             var sfBlazor = 'sfBlazor';
-            // eslint-disable-next-line
-            window[sfBlazor].renderComplete(this.element, wrapperElement);
+            window["" + sfBlazor].renderComplete(this.element, wrapperElement);
         }
         this.isRendered = true;
     };
@@ -344,7 +376,6 @@ var Component = /** @class */ (function (_super) {
      * @returns {any} ?
      * @private
      */
-    // eslint-disable-next-line
     Component.prototype.createElement = function (tagName, prop, isVDOM) {
         return createElement(tagName, prop);
     };
@@ -355,15 +386,12 @@ var Component = /** @class */ (function (_super) {
      * @returns {void} .
      * @private
      */
-    // eslint-disable-next-line
     Component.prototype.triggerStateChange = function (handler, argument) {
         if (this.isReactHybrid) {
-            // eslint-disable-next-line
             this.setState();
             this.currentContext = { calls: handler, args: argument };
         }
     };
-    // tslint: enable: no-any
     Component.prototype.injectModules = function () {
         if (this.injectedModules && this.injectedModules.length) {
             this.moduleLoader.inject(this.requiredModules(), this.injectedModules);
@@ -398,13 +426,11 @@ var Component = /** @class */ (function (_super) {
             }
         }
     };
-    // eslint-disable-next-line
     Component.prototype.renderReactTemplates = function (callback) {
         if (!isNullOrUndefined(callback)) {
             callback();
         }
     };
-    // eslint-disable-next-line
     Component.prototype.clearTemplate = function (templateName, index) {
         //No Code
     };
@@ -436,9 +462,7 @@ var Component = /** @class */ (function (_super) {
         var persistObj = {};
         for (var _i = 0, options_1 = options; _i < options_1.length; _i++) {
             var key = options_1[_i];
-            var objValue = void 0;
-            // eslint-disable-next-line
-            objValue = getValue(key, this);
+            var objValue = getValue(key, this);
             if (!isUndefined(objValue)) {
                 setValue(key, this.getActualProperties(objValue), persistObj);
             }
@@ -462,8 +486,7 @@ var Component = /** @class */ (function (_super) {
         var newObj = {};
         var _loop_1 = function (key) {
             if (ignoreList.indexOf(key) === -1) {
-                // eslint-disable-next-line
-                var value = obj[key];
+                var value = obj["" + key];
                 if (typeof value === 'object' && !(value instanceof Array)) {
                     var newList = ignoreList.filter(function (str) {
                         var regExp = RegExp;

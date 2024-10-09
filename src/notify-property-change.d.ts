@@ -3,10 +3,6 @@
  *
  * @param {Object} defaultValue - Specifies the default value of property.
  * @returns {PropertyDecorator} ?
- * ```
- * @Property('TypeScript')
- * propertyName: Type;
- * ```
  * @private
  */
 export declare function Property<T>(defaultValue?: T | Object): PropertyDecorator;
@@ -75,22 +71,6 @@ export declare function Event(): PropertyDecorator;
  *
  * @param {Function} classConstructor ?
  * @returns {void} ?
- * ```
- *  @NotifyPropertyChanges
- * class DemoClass implements INotifyPropertyChanged {
- *
- *     @Property()
- *     property1: string;
- *
- *     dataBind: () => void;
- *
- *     constructor() { }
- *
- *     onPropertyChanged(newProp: any, oldProp: any) {
- *         // Called when property changed
- *     }
- * }
- * ```
  * @private
  */
 export declare function NotifyPropertyChanges(classConstructor: Function): void;

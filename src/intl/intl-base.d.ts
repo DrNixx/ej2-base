@@ -148,9 +148,10 @@ export declare namespace IntlBase {
      * @param {Object} numericObject ?
      * @param {string} currencyCode ?
      * @param {string} altSymbol ?
+     * @param {string} ignoreCurrency ?
      * @returns {string} ?
      */
-    function getCurrencySymbol(numericObject: Object, currencyCode: string, altSymbol?: string): string;
+    function getCurrencySymbol(numericObject: Object, currencyCode: string, altSymbol?: string, ignoreCurrency?: boolean): string;
     /**
      * Returns formatting options for custom number format
      *
@@ -200,6 +201,13 @@ export declare namespace IntlBase {
      * @returns {string} ?
      */
     function getActualDateTimeFormat(culture: string, options: DateFormatOptions, cldr?: Object, isExcelFormat?: boolean): string;
+    /**
+     *
+     * @param {string} actual ?
+     * @param {any} option ?
+     * @returns {any} ?
+     */
+    function processSymbol(actual: string, option: any): any;
     /**
      * Returns Native Number pattern
      *

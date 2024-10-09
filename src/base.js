@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUndefined, isNullOrUndefined, merge, setImmediate, setValue, isBlazor, getValue, extend } from './util';
 import { addClass, removeClass } from './dom';
 import { Observer } from './observer';
 var isColEName = new RegExp(']');
-/* tslint:enable:no-any */
 /**
  * Base library module is common module for Framework modules like touch,keyboard and etc.,
  *
  * @private
+ * @returns {void} ?
  */
 var Base = /** @class */ (function () {
     /**
@@ -27,7 +28,6 @@ var Base = /** @class */ (function () {
         this.bulkChanges = {};
         this.refreshing = false;
         this.ignoreCollectionWatch = false;
-        // eslint-disable-next-line
         this.finalUpdate = function () { };
         this.childChangedProperties = {};
         this.modelObserver = new Observer(this);
@@ -80,7 +80,6 @@ var Base = /** @class */ (function () {
      * @param {Object} parent ?
      * @returns {void} ?
      */
-    // tslint:disable-next-line:no-any
     Base.callChildDataBind = function (obj, parent) {
         var keys = Object.keys(obj);
         for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
@@ -121,7 +120,6 @@ var Base = /** @class */ (function () {
             this.isProtectedOnChange = prevDetection;
         }
     };
-    /* tslint:disable:no-any */
     Base.prototype.serverDataBind = function (newChanges) {
         if (!isBlazor()) {
             return;
@@ -134,10 +132,8 @@ var Base = /** @class */ (function () {
             this.bulkChanges = {};
         }
     };
-    /* tslint:enable:no-any */
     Base.prototype.saveChanges = function (key, newValue, oldValue) {
         if (isBlazor()) {
-            // tslint:disable-next-line:no-any
             var newChanges = {};
             newChanges["" + key] = newValue;
             this.serverDataBind(newChanges);
@@ -255,9 +251,16 @@ var Base = /** @class */ (function () {
      */
     Base.prototype.destroy = function () {
         var _this = this;
-        // eslint-disable-next-line
+        // eslint-disable-next-line camelcase
         this.element.ej2_instances =
-            this.element.ej2_instances.filter(function (i) { return i !== _this; });
+            this.element.ej2_instances ?
+                this.element.ej2_instances.filter(function (i) {
+                    if (proxyToRaw) {
+                        return proxyToRaw(i) !== proxyToRaw(_this);
+                    }
+                    return i !== _this;
+                })
+                : [];
         removeClass([this.element], ['e-' + this.getModuleName()]);
         if (this.element.ej2_instances.length === 0) {
             // Remove module class from the root element
@@ -277,7 +280,6 @@ export { Base };
  * @param {string} comp Specifies the component module name or Component.
  * @returns {any} ?
  */
-// tslint:disable-next-line:no-any
 export function getComponent(elem, comp) {
     var instance;
     var i;
@@ -291,7 +293,6 @@ export function getComponent(elem, comp) {
             }
         }
         else {
-            // tslint:disable-next-line:no-any
             if (instance instanceof comp) {
                 return instance;
             }
@@ -303,19 +304,18 @@ export function getComponent(elem, comp) {
  * Function to remove the child instances.
  *
  * @param {HTMLElement} element ?
- * @return {void}
+ * @returns {void} ?
  * @private
  */
-// tslint:disable-next-line:no-any
 export function removeChildInstance(element) {
-    // tslint:disable-next-line:no-any
     var childEle = [].slice.call(element.getElementsByClassName('e-control'));
     for (var i = 0; i < childEle.length; i++) {
         var compName = childEle[parseInt(i.toString(), 10)].classList[1].split('e-')[1];
-        // tslint:disable-next-line:no-any
         var compInstance = getComponent(childEle[parseInt(i.toString(), 10)], compName);
         if (!isUndefined(compInstance)) {
             compInstance.destroy();
         }
     }
 }
+export var proxyToRaw;
+export var setProxyToRaw = function (toRaw) { proxyToRaw = toRaw; };

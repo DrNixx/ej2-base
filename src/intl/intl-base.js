@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types */
 import { defaultCurrencyCode } from '../internationalization';
 import { getValue, isNullOrUndefined, extend, isBlazor } from '../util';
 import { ParserBase as parser, getBlazorCurrencySymbol } from './parser-base';
@@ -29,13 +30,13 @@ export var blazorCultureFormats = {
 /**
  * Date base common constants and function for date parser and formatter.
  */
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export var IntlBase;
 (function (IntlBase) {
-    /* eslint-disable */
-    // tslint:disable-next-line:max-line-length.
+    // eslint-disable-next-line security/detect-unsafe-regex
     IntlBase.negativeDataRegex = /^(('[^']+'|''|[^*#@0,.E])*)(\*.)?((([#,]*[0,]*0+)(\.0*[0-9]*#*)?)|([#,]*@+#*))(E\+?0+)?(('[^']+'|''|[^*#@0,.E])*)$/;
-    IntlBase.customRegex = /^(('[^']+'|''|[^*#@0,.])*)(\*.)?((([0#,]*[0,]*[0#]*[0#\ ]*)(\.[0#]*)?)|([#,]*@+#*))(E\+?0+)?(('[^']+'|''|[^*#@0,.E])*)$/;
+    // eslint-disable-next-line security/detect-unsafe-regex
+    IntlBase.customRegex = /^(('[^']+'|''|[^*#@0,.])*)(\*.)?((([0#,]*[0,]*[0#]*[0# ]*)(\.[0#]*)?)|([#,]*@+#*))(E\+?0+)?(('[^']+'|''|[^*#@0,.E])*)$/;
     IntlBase.latnParseRegex = /0|1|2|3|4|5|6|7|8|9/g;
     var fractionRegex = /[0-9]/g;
     IntlBase.defaultCurrency = '$';
@@ -66,8 +67,8 @@ export var IntlBase;
         'fri': 5,
         'sat': 6
     };
-    IntlBase.formatRegex = new regExp("(^[ncpae]{1})([0-1]?[0-9]|20)?$", "i");
-    IntlBase.currencyFormatRegex = new regExp("(^[ca]{1})([0-1]?[0-9]|20)?$", "i");
+    IntlBase.formatRegex = new regExp('(^[ncpae]{1})([0-1]?[0-9]|20)?$', 'i');
+    IntlBase.currencyFormatRegex = new regExp('(^[ca]{1})([0-1]?[0-9]|20)?$', 'i');
     IntlBase.curWithoutNumberRegex = /(c|a)$/ig;
     var typeMapper = {
         '$': 'isCurrency',
@@ -78,7 +79,6 @@ export var IntlBase;
     };
     IntlBase.dateParseRegex = /([a-z])\1*|'([^']|'')+'|''|./gi;
     IntlBase.basicPatterns = ['short', 'medium', 'long', 'full'];
-    /* tslint:disable:quotemark */
     IntlBase.defaultObject = {
         'dates': {
             'calendars': {
@@ -629,7 +629,6 @@ export var IntlBase;
             }
         }
     };
-    /* tslint:enable:quotemark */
     IntlBase.monthIndex = {
         3: 'abbreviated',
         4: 'wide',
@@ -773,8 +772,7 @@ export var IntlBase;
         var ret = {};
         var pattern = matches[1].toUpperCase();
         ret.isAccount = (pattern === 'A');
-        // eslint-disable-next-line
-        ret.type = IntlBase.patternMatcher[pattern];
+        ret.type = IntlBase.patternMatcher["" + pattern];
         if (skeleton.length > 1) {
             ret.fractionDigits = parseInt(matches[2], 10);
         }
@@ -825,7 +823,8 @@ export var IntlBase;
      */
     function changeCurrencySymbol(val, sym) {
         if (val) {
-            return val.replace(IntlBase.defaultCurrency, sym);
+            val = val.replace(IntlBase.defaultCurrency, sym);
+            return (sym === '') ? val.trim() : val;
         }
         return '';
     }
@@ -837,11 +836,12 @@ export var IntlBase;
      * @param {Object} numericObject ?
      * @param {string} currencyCode ?
      * @param {string} altSymbol ?
+     * @param {string} ignoreCurrency ?
      * @returns {string} ?
      */
-    function getCurrencySymbol(numericObject, currencyCode, altSymbol) {
+    function getCurrencySymbol(numericObject, currencyCode, altSymbol, ignoreCurrency) {
         var symbol = altSymbol ? ('.' + altSymbol) : '.symbol';
-        var getCurrency = getValue('currencies.' + currencyCode + symbol, numericObject) ||
+        var getCurrency = ignoreCurrency ? '$' : getValue('currencies.' + currencyCode + symbol, numericObject) ||
             getValue('currencies.' + currencyCode + '.symbol-alt-narrow', numericObject) || '$';
         return getCurrency;
     }
@@ -860,8 +860,7 @@ export var IntlBase;
         var formatSplit = format.split(';');
         var data = ['pData', 'nData', 'zeroData'];
         for (var i = 0; i < formatSplit.length; i++) {
-            // eslint-disable-next-line
-            options[data[i]] = customNumberFormat(formatSplit[i], dOptions, obj);
+            options["" + data[parseInt(i.toString(), 10)]] = customNumberFormat(formatSplit[parseInt(i.toString(), 10)], dOptions, obj);
         }
         if (isNullOrUndefined(options.nData)) {
             options.nData = extend({}, options.pData);
@@ -889,8 +888,8 @@ export var IntlBase;
         cOptions.nlead = pattern[1];
         cOptions.nend = pattern[10];
         var integerPart = pattern[6];
-        var spaceCapture = integerPart.match(/\ $/g) ? true : false;
-        var spaceGrouping = integerPart.replace(/\ $/g, '').indexOf(' ') !== -1;
+        var spaceCapture = integerPart.match(/ $/g) ? true : false;
+        var spaceGrouping = integerPart.replace(/ $/g, '').indexOf(' ') !== -1;
         cOptions.useGrouping = integerPart.indexOf(',') !== -1 || spaceGrouping;
         integerPart = integerPart.replace(/,/g, '');
         var fractionPart = pattern[7];
@@ -920,7 +919,6 @@ export var IntlBase;
         if (!isNullOrUndefined(numObject)) {
             var symbolPattern = getSymbolPattern(cOptions.type, dOptions.numberMapper.numberSystem, numObject, false);
             if (cOptions.useGrouping) {
-                // eslint-disable-next-line
                 cOptions.groupSeparator = spaceGrouping ? ' ' : dOptions.numberMapper.numberSymbols[mapper[2]];
                 cOptions.groupData = NumberFormat.getGroupingDetails(symbolPattern.split(';')[0]);
             }
@@ -945,10 +943,8 @@ export var IntlBase;
             var part = parts[parseInt(i.toString(), 10)];
             var loc = part.indexOf(actual);
             if ((loc !== -1) && ((loc < part.indexOf('\'')) || (loc > part.lastIndexOf('\'')))) {
-                // eslint-disable-next-line
-                options[typeMapper[i]] = part.substr(0, loc) + symbol + part.substr(loc + 1);
-                // eslint-disable-next-line
-                options[typeMapper[actual]] = true;
+                options["" + typeMapper[parseInt(i.toString(), 10)]] = part.substr(0, loc) + symbol + part.substr(loc + 1);
+                options["" + typeMapper["" + actual]] = true;
                 options.type = options.isCurrency ? 'currency' : 'percent';
                 break;
             }
@@ -964,7 +960,7 @@ export var IntlBase;
      * @returns {string} ?
      */
     function getDateSeparator(dateObj) {
-        var value = (getValue('dateFormats.short', dateObj) || '').match(/[d‏M‏]([^d‏M])[d‏M‏]/i);
+        var value = (getValue('dateFormats.short', dateObj) || '').match(/[dM]([^dM])[dM]/i);
         return value ? value[1] : '/';
     }
     IntlBase.getDateSeparator = getDateSeparator;
@@ -986,8 +982,7 @@ export var IntlBase;
         var actualPattern = options.format || getResultantPattern(options.skeleton, dependable.dateObject, options.type);
         if (isExcelFormat) {
             actualPattern = actualPattern.replace(patternRegex, function (pattern) {
-                // eslint-disable-next-line
-                return patternMatch[pattern];
+                return patternMatch["" + pattern];
             });
             if (actualPattern.indexOf('z') !== -1) {
                 var tLength = actualPattern.match(/z/g).length;
@@ -1019,10 +1014,8 @@ export var IntlBase;
      * @param {any} option ?
      * @returns {any} ?
      */
-    // eslint-disable-next-line
     function processSymbol(actual, option) {
         if (actual.indexOf(',') !== -1) {
-            // eslint-disable-next-line
             var split = actual.split(',');
             actual = (split[0] + getValue('numberMapper.numberSymbols.group', option) +
                 split[1].replace('.', getValue('numberMapper.numberSymbols.decimal', option)));
@@ -1032,6 +1025,7 @@ export var IntlBase;
         }
         return actual;
     }
+    IntlBase.processSymbol = processSymbol;
     /**
      * Returns Native Number pattern
      *

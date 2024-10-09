@@ -63,6 +63,12 @@ export declare class Observer {
      */
     destroy(): void;
     /**
+     * To remove internationalization events
+     *
+     * @returns {void} ?
+     */
+    offIntlEvents(): void;
+    /**
      * Returns if the property exists.
      *
      * @param {string} prop ?

@@ -78,6 +78,7 @@ export declare class NumberFormat {
      * @param {number} value ?
      * @param {base.GenericFormatOptions} fOptions ?
      * @param {CommonOptions} dOptions ?
+     * @param {NumberFormatOptions} [option] ?
      * @returns {string} ?
      */
     private static intNumberFormatter;
@@ -107,6 +108,7 @@ export declare class NumberFormat {
      * @param {number} value ?
      * @param {number} min ?
      * @param {number} max ?
+     * @param {NumberFormatOptions} [option] ?
      * @returns {string} ?
      */
     private static processFraction;
@@ -122,6 +124,7 @@ export declare class NumberFormat {
      * Returns custom format for pivot table
      *
      * @param {number} value ?
+     * @returns {string} ?
      */
     private static customPivotFormat;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Parser
  */
@@ -59,10 +60,8 @@ var ParserBase = /** @class */ (function () {
         var res = {};
         for (var _i = 0, propKeys_1 = propKeys; _i < propKeys_1.length; _i++) {
             var key = propKeys_1[_i];
-            // eslint-disable-next-line
-            if (!res.hasOwnProperty(prop[key])) {
-                // eslint-disable-next-line
-                res[prop[key]] = key;
+            if (!Object.prototype.hasOwnProperty.call(res, prop["" + key])) {
+                res[prop["" + key]] = key;
             }
         }
         return res;
@@ -90,8 +89,7 @@ var ParserBase = /** @class */ (function () {
         var ret = {};
         for (var _i = 0, matchKeys_1 = matchKeys; _i < matchKeys_1.length; _i++) {
             var key = matchKeys_1[_i];
-            // eslint-disable-next-line
-            ret[prop[key]] = defaultNumberSymbols[key];
+            ret[prop["" + key]] = defaultNumberSymbols["" + key];
         }
         return ret;
     };
@@ -124,8 +122,7 @@ var ParserBase = /** @class */ (function () {
      */
     ParserBase.convertValueParts = function (value, regex, obj) {
         return value.replace(regex, function (str) {
-            // eslint-disable-next-line
-            return obj[str];
+            return obj["" + str];
         });
     };
     /**
@@ -177,7 +174,6 @@ var ParserBase = /** @class */ (function () {
      * @param {boolean} isNumber ?
      * @returns {NumberMapper} ?
      */
-    // eslint-disable-next-line
     ParserBase.getNumberMapper = function (curObj, numberSystem, isNumber) {
         var ret = { mapper: {} };
         var cur = this.getDefaultNumberingSystem(curObj);
@@ -189,8 +185,7 @@ var ParserBase = /** @class */ (function () {
             if (!isUndefined(digits)) {
                 for (var _i = 0, latnNumberSystem_1 = latnNumberSystem; _i < latnNumberSystem_1.length; _i++) {
                     var i = latnNumberSystem_1[_i];
-                    // eslint-disable-next-line
-                    ret.mapper[i] = digits[i];
+                    ret.mapper[parseInt(i.toString(), 10)] = digits[parseInt(i.toString(), 10)];
                 }
             }
         }
