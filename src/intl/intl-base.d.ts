@@ -1,5 +1,14 @@
 import { NumberFormatOptions, DateFormatOptions } from '../internationalization';
 import { FormatParts, CommonOptions } from './number-formatter';
+/**
+ * Specifies default currency code to be considered
+ *
+ * @private
+ */
+export declare let defaultCurrencyCode: string;
+export declare function setDefaultCurrencyCode(value: string): void;
+export declare function setNumberFormat(value: typeof import('./number-formatter').NumberFormat): void;
+export declare function setDateFormat(value: typeof import('./date-formatter').DateFormat): void;
 export declare const blazorCultureFormats: Object;
 /**
  * Date base common constants and function for date parser and formatter.
@@ -258,7 +267,8 @@ export declare namespace IntlBase {
     /**
      * @private
      * @param {Date} date ?
+     * @param {number} firstDayOfWeek ?
      * @returns {number} ?
      */
-    function getWeekOfYear(date: Date): number;
+    function getWeekOfYear(date: Date, firstDayOfWeek: number): number;
 }

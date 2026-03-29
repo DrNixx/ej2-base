@@ -1,4 +1,7 @@
-@import '../common/mixin.scss';
+@use 'sass:color';
+@use 'sass:meta';
+@use 'sass:list';
+@use '../common/mixin' as *;
 
 @function mapcolorvariable($pallete-name){
   @return var(#{'--color-sf-'+ $pallete-name});
@@ -15,7 +18,7 @@
 
   //branding
   --color-sf-brand-primary: #{#7e56d8};
-  --color-sf-brand-primary-d10: #{darken(#7e56d8, 5%)};
+  --color-sf-brand-primary-d10: #{color.adjust(#7e56d8, $lightness: -5%)};
   --color-sf-on-brand-solid-primary: #{#fff};
   --color-sf-brand-solid-primary: #{#7e56d8};
   --color-sf-brand-solid-primary-hover: #{#6840c6};
@@ -31,7 +34,7 @@
   --color-sf-text-tertiary: #{#475467};
   --color-sf-text-tertiary-hover: #{#344054};
   --color-sf-text-tertiary-on-brand: #{#eaecf0};
-  --color-sf-text-quarterary: #{#101828};
+  --color-sf-text-quarterary: #{#667085};
   --color-sf-text-quarterary-on-brand: #{#101828};
   --color-sf-text-white: #{#fff};
   --color-sf-text-disabled: #{#667085};
@@ -777,6 +780,7 @@ $overlay-bg-color: $utility-overlay-bg-color;
 $table-bg-color-hover: $bg-secondary !default;
 $table-bg-color-pressed: $bg-quaternary !default;
 $table-bg-color-selected: $bg-tertiary !default;
+$table-bg-color-selected-hover: color-mix(in srgb, rgba($bg-tertiary, 1), rgba($bg-secondary, .2)) !default;
 
 //text-color
 $content-text-color: $text-primary !default;
@@ -907,7 +911,7 @@ $secondary-bg-color-disabled: $bg-disabled !default;
 $secondary-border-color-disabled: $border-disabled-subtle !default;
 $secondary-text-color-disabled: $fg-disabled !default;
 
-//Primary-button
+//Primary-buttons
 
 $primary-bg-color: $brand-solid-primary !default;
 $primary-border-color: $brand-solid-primary !default;
@@ -1191,6 +1195,15 @@ $chip-secondary-active-border-color: $fg-senary !default;
 $gantt-connected-task-color: $brand-primary-d10 !default;
 $gantt-active-parent-task-color: $brand-primary-d10 !default;
 
+$font-family: 'Inter' !default;
+$font-size: 12px !default;
+$font-weight: normal !default;
+$error-font-color: $danger !default;
+$overlay-bg-color: rgba($cool-gray-500, .75) !default;
+$warning-font-color: $orange-700 !default;
+$success-font-color: $green-700 !default;
+$information-font-color: $cyan-700 !default;
+
 .e-dark-mode {
 
   //bds color system
@@ -1202,7 +1215,7 @@ $gantt-active-parent-task-color: $brand-primary-d10 !default;
   
   //branding
   --color-sf-brand-primary: #{#9d76ed};
-  --color-sf-brand-primary-d10: #{darken(#9d76ed, 5%)};
+  --color-sf-brand-primary-d10: #{color.adjust(#9d76ed, $lightness: -5%)};
   --color-sf-on-brand-solid-primary: #{#fff};
   --color-sf-brand-solid-primary: #{#7e56d8};
 

@@ -96,12 +96,6 @@ export declare const cldrData: Object;
  */
 export declare let defaultCulture: string;
 /**
- * Specifies default currency code to be considered
- *
- * @private
- */
-export declare let defaultCurrencyCode: string;
-/**
  * Internationalization class provides support to parse and format the number and date object to the desired format.
  * ```typescript
  * // To set the culture globally

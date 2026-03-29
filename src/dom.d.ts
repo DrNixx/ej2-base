@@ -22,6 +22,14 @@ export interface ElementProperties {
  */
 export declare function createElement(tagName: string, properties?: ElementProperties): HTMLElement;
 /**
+ * Updates the CSS text of an element by merging new styles with existing styles.
+ *
+ * @param {HTMLElement} element - The element whose styles need to be updated.
+ * @param {string} cssText - The new CSS styles to be added or updated.
+ * @returns {void}
+ */
+export declare function updateCSSText(element: HTMLElement, cssText: string): void;
+/**
  * The function used to add the classes to array of elements
  *
  * @param  {Element[]|NodeList} elements - An array of elements that need to add a list of classes

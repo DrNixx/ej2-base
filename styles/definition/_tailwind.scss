@@ -1,4 +1,7 @@
-@import '../common/mixin.scss';
+@use 'sass:color';
+@use 'sass:meta';
+@use 'sass:list';
+@use '../common/mixin' as *;
 
 $black: #000;
 $white: #fff;
@@ -409,7 +412,7 @@ $rating-selected-disabled-color: $cool-gray-400 !default;
 $rating-unrated-disabled-color: $cool-gray-200 !default;
 $rating-selected-hover-color: $primary !default;
 $rating-unrated-hover-color: $cool-gray-700 !default;
-$rating-pressed-color: darken($primary, 15%) !default;
+$rating-pressed-color: color.adjust($primary, $lightness: -15%) !default;
 
 $font-icon-8: 8px !default;
 $font-icon-9: 9px !default;
@@ -435,3 +438,6 @@ $overlay-bg-color: rgba($cool-gray-500, .75) !default;
 $warning-font-color: $orange-700 !default;
 $success-font-color: $green-700 !default;
 $information-font-color: $cyan-700 !default;
+
+$frozen-shadow: rgba(0, 0, 0, .12) !default;
+$frozen-shadow-2: rgba(0, 0, 0, .12) !default;

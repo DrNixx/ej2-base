@@ -1,10 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types */
-import { defaultCurrencyCode } from '../internationalization';
 import { getValue, isNullOrUndefined, extend, isBlazor } from '../util';
 import { ParserBase as parser, getBlazorCurrencySymbol } from './parser-base';
-import { DateFormat } from './date-formatter';
-import { NumberFormat } from './number-formatter';
 import { isUndefined } from '../util';
+/**
+ * Specifies default currency code to be considered
+ *
+ * @private
+ */
+export var defaultCurrencyCode = 'USD';
+var NumberFormat = null;
+var DateFormat = null;
+export function setDefaultCurrencyCode(value) { defaultCurrencyCode = value; }
+export function setNumberFormat(value) { NumberFormat = value; }
+export function setDateFormat(value) { DateFormat = value; }
 var regExp = RegExp;
 export var blazorCultureFormats = {
     'en-US': {
@@ -41,7 +48,7 @@ export var IntlBase;
     var fractionRegex = /[0-9]/g;
     IntlBase.defaultCurrency = '$';
     var mapper = ['infinity', 'nan', 'group', 'decimal'];
-    var patternRegex = /G|M|L|H|c|'| a|yy|y|EEEE|E/g;
+    var patternRegex = /G|M|L|H|c|'| a|B|yy|y|EEEE|E/g;
     var patternMatch = {
         'G': '',
         'M': 'm',
@@ -50,6 +57,7 @@ export var IntlBase;
         'c': 'd',
         '\'': '"',
         ' a': ' AM/PM',
+        'B': 'AM/PM',
         'yy': 'yy',
         'y': 'yyyy',
         'EEEE': 'dddd',
@@ -892,6 +900,7 @@ export var IntlBase;
         var spaceGrouping = integerPart.replace(/ $/g, '').indexOf(' ') !== -1;
         cOptions.useGrouping = integerPart.indexOf(',') !== -1 || spaceGrouping;
         integerPart = integerPart.replace(/,/g, '');
+        integerPart = (/\s$/.test(integerPart)) ? integerPart.replace(/ /g, '') : integerPart;
         var fractionPart = pattern[7];
         if (integerPart.indexOf('0') !== -1) {
             cOptions.minimumIntegerDigits = integerPart.length - integerPart.indexOf('0');
@@ -1202,9 +1211,10 @@ export var IntlBase;
     /**
      * @private
      * @param {Date} date ?
+     * @param {number} firstDayOfWeek ?
      * @returns {number} ?
      */
-    function getWeekOfYear(date) {
+    function getWeekOfYear(date, firstDayOfWeek) {
         var newYear = new Date(date.getFullYear(), 0, 1);
         var day = newYear.getDay();
         var weeknum;
@@ -1212,7 +1222,7 @@ export var IntlBase;
         var daynum = Math.floor((date.getTime() - newYear.getTime() -
             (date.getTimezoneOffset() - newYear.getTimezoneOffset()) * 60000) / 86400000) + 1;
         if (day < 4) {
-            weeknum = Math.floor((daynum + day - 1) / 7) + 1;
+            weeknum = Math.floor((daynum + day - firstDayOfWeek - 1) / 7) + 1;
             if (weeknum > 52) {
                 var nYear = new Date(date.getFullYear() + 1, 0, 1);
                 var nday = nYear.getDay();
@@ -1221,7 +1231,7 @@ export var IntlBase;
             }
         }
         else {
-            weeknum = Math.floor((daynum + day - 1) / 7);
+            weeknum = Math.floor((daynum + day - firstDayOfWeek - 1) / 7);
         }
         return weeknum;
     }

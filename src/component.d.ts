@@ -82,24 +82,28 @@ export declare abstract class Component<ElementType extends HTMLElement> extends
     /**
      * Returns the persistence data for component
      *
+     * @private
      * @returns {any} ?
      */
     getLocalData(): any;
     /**
      * Adding unload event to persist data when enable persistence true
      *
+     * @private
      * @returns {void}
      */
     attachUnloadEvent(): void;
     /**
      * Handling unload event to persist data when enable persistence true
      *
+     * @private
      * @returns {void}
      */
     handleUnload(): void;
     /**
      * Removing unload event to persist data when enable persistence true
      *
+     * @private
      * @returns {void}
      */
     detachUnloadEvent(): void;
@@ -196,7 +200,7 @@ export declare abstract class Component<ElementType extends HTMLElement> extends
     private mergePersistData;
     private setPersistData;
     protected renderReactTemplates(callback?: any): void;
-    protected clearTemplate(templateName?: string[], index?: any): void;
+    protected clearTemplate(templateName?: string[], index?: any, callback?: any): void;
     private getUniqueID;
     private pageID;
     private isHistoryChanged;

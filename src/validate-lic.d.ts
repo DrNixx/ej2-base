@@ -1,4 +1,7 @@
 export declare const componentList: string[];
+export declare const pdfViewerSDKComponents: string[];
+export declare const spreadsheetEditorSDKComponents: string[];
+export declare const wordEditorSDKComponents: string[];
 /**
  * To set license key.
  *

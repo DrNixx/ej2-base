@@ -2,7 +2,7 @@ import { DateFormat } from './intl/date-formatter';
 import { NumberFormat } from './intl/number-formatter';
 import { DateParser } from './intl/date-parser';
 import { NumberParser } from './intl/number-parser';
-import { IntlBase } from './intl/intl-base';
+import { IntlBase, defaultCurrencyCode, setDefaultCurrencyCode } from './intl/intl-base';
 import { extend, getValue, isBlazor } from './util';
 import { Observer } from './observer';
 /**
@@ -25,12 +25,6 @@ export var cldrData = {};
  * @private
  */
 export var defaultCulture = 'en-US';
-/**
- * Specifies default currency code to be considered
- *
- * @private
- */
-export var defaultCurrencyCode = 'USD';
 var mapper = ['numericObject', 'dateObject'];
 /**
  * Internationalization class provides support to parse and format the number and date object to the desired format.
@@ -216,7 +210,7 @@ export function setCulture(cultureName) {
  * @returns {void} ?
  */
 export function setCurrencyCode(currencyCode) {
-    defaultCurrencyCode = currencyCode;
+    setDefaultCurrencyCode(currencyCode);
     onIntlChange.notify('notifyExternalChange', { 'currencyCode': defaultCurrencyCode });
 }
 /**

@@ -1,4 +1,7 @@
-@import '../common/mixin.scss';
+@use 'sass:color';
+@use 'sass:meta';
+@use 'sass:list';
+@use '../common/mixin' as *;
 
 $selection-bg: #400074 !default;
 $selection-font: #fff !default;
@@ -181,3 +184,6 @@ $border-left-radius: 0 !default;
 $border-right-radius: 0 !default;
 $border-top-radius: 0 !default;
 $border-bottom-radius: 0 !default;
+
+$frozen-shadow: rgba(255, 255, 255, .25) !default;
+$frozen-shadow-2: rgba(255, 255, 255, .25) !default;

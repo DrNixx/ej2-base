@@ -1,4 +1,7 @@
-@import '../common/mixin.scss';
+@use 'sass:color';
+@use 'sass:meta';
+@use 'sass:list';
+@use '../common/mixin' as *;
 
 $brand-primary: #317ab9 !default;
 $brand-primary-darken-10: #3071a9 !default;
@@ -200,3 +203,6 @@ $border-left-radius: 0 !default;
 $border-right-radius: 0 !default;
 $border-top-radius: 0 !default;
 $border-bottom-radius: 0 !default;
+
+$frozen-shadow: rgba(0, 0, 0, .12) !default;
+$frozen-shadow-2: rgba(0, 0, 0, .12) !default;

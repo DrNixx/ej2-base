@@ -284,17 +284,19 @@ export function getComponent(elem, comp) {
     var instance;
     var i;
     var ele = typeof elem === 'string' ? document.getElementById(elem) : elem;
-    for (i = 0; i < ele.ej2_instances.length; i++) {
-        instance = ele.ej2_instances[parseInt(i.toString(), 10)];
-        if (typeof comp === 'string') {
-            var compName = instance.getModuleName();
-            if (comp === compName) {
-                return instance;
+    if (ele && ele.ej2_instances) {
+        for (i = 0; i < ele.ej2_instances.length; i++) {
+            instance = ele.ej2_instances[parseInt(i.toString(), 10)];
+            if (typeof comp === 'string') {
+                var compName = instance.getModuleName();
+                if (comp === compName) {
+                    return instance;
+                }
             }
-        }
-        else {
-            if (instance instanceof comp) {
-                return instance;
+            else {
+                if (instance instanceof comp) {
+                    return instance;
+                }
             }
         }
     }
