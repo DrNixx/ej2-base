@@ -43,7 +43,8 @@ export function setImmediate(handler) {
         }
     };
     window.addEventListener('message', messageHandler, false);
-    window.postMessage(secret, '*');
+    var origin = window.location.origin.indexOf('file://') === 0 ? '*' : window.location.origin;
+    window.postMessage(secret, origin);
     return unbind = function () {
         window.removeEventListener('message', messageHandler);
         handler = messageHandler = secret = undefined;
@@ -83,6 +84,9 @@ export function setValue(nameSpace, value, obj) {
     var key;
     for (i = 0; i < length; i++) {
         key = keys[parseInt(i.toString(), 10)];
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+            continue;
+        }
         if (i + 1 === length) {
             fromObj["" + key] = value === undefined ? {} : value;
         }

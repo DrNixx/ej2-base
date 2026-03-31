@@ -133,7 +133,9 @@ var Animation = /** @class */ (function (_super) {
         var timerId = 0;
         var prevTimeStamp = 0;
         var duration = model.duration;
-        model.element.setAttribute('e-animate', 'true');
+        if (model && model.element) {
+            model.element.setAttribute('e-animate', 'true');
+        }
         var startAnimation = function (timeStamp) {
             try {
                 if (timeStamp) {
@@ -178,8 +180,10 @@ var Animation = /** @class */ (function (_super) {
             }
             catch (e) {
                 cancelAnimationFrame(timerId);
-                model.element.removeAttribute('e-animation-id');
-                if (model.fail) {
+                if (model && model.element) {
+                    model.element.removeAttribute('e-animation-id');
+                }
+                if (model && model.fail) {
                     model.fail.call(_this, e);
                 }
             }

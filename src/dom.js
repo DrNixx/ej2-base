@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Functions related to dom operations.
@@ -31,12 +42,41 @@ export function createElement(tagName, properties) {
         element.id = properties.id;
     }
     if (properties.styles !== undefined) {
-        element.setAttribute('style', properties.styles);
+        element.style.cssText = properties.styles;
     }
     if (properties.attrs !== undefined) {
         attributes(element, properties.attrs);
     }
     return element;
+}
+/**
+ * Updates the CSS text of an element by merging new styles with existing styles.
+ *
+ * @param {HTMLElement} element - The element whose styles need to be updated.
+ * @param {string} cssText - The new CSS styles to be added or updated.
+ * @returns {void}
+ */
+export function updateCSSText(element, cssText) {
+    var existingStyles = element.style.cssText.split(';').reduce(function (styles, style) {
+        var _a = style.split(':'), key = _a[0], value = _a[1];
+        if (key && value) {
+            styles[key.trim()] = value.trim();
+        }
+        return styles;
+    }, {});
+    var newStyles = cssText.split(';').reduce(function (styles, style) {
+        var _a = style.split(':'), key = _a[0], value = _a[1];
+        if (key && value) {
+            styles[key.trim()] = value.trim();
+        }
+        return styles;
+    }, {});
+    var styleElement = document.createElement('div');
+    // Use safe iteration over keys using Object.keys
+    Object.keys(__assign({}, existingStyles, newStyles)).forEach(function (key) {
+        styleElement.style.setProperty(key, newStyles[key] || existingStyles[key]);
+    });
+    element.style.cssText = styleElement.style.cssText;
 }
 /**
  * The function used to add the classes to array of elements
@@ -285,6 +325,9 @@ export function selectAll(selector, context, needsVDOM) {
  * @private
  */
 function querySelectId(selector) {
+    if (selector.indexOf('\\#') !== -1) {
+        return selector;
+    }
     var charRegex = /(!|"|\$|%|&|'|\(|\)|\*|\/|:|;|<|=|\?|@|\]|\^|`|{|}|\||\+|~)/g;
     if (selector.match(/#[0-9]/g) || selector.match(charRegex)) {
         var idList = selector.split(',');

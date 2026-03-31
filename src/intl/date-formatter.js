@@ -1,9 +1,9 @@
 import { ParserBase as parser } from './parser-base';
-import { IntlBase as base } from './intl-base';
+import { IntlBase as base, setDateFormat } from './intl-base';
 import { isUndefined, throwError, getValue, isBlazor } from '../util';
 import { HijriParser } from '../hijri-parser';
 import { isNullOrUndefined, extend } from '../util';
-var abbreviateRegexGlobal = /\/MMMMM|MMMM|MMM|a|LLLL|LLL|EEEEE|EEEE|E|K|cccc|ccc|WW|W|G+|z+/gi;
+var abbreviateRegexGlobal = /\/MMMMM|MMMM|MMM|a|B|LLLL|LLL|EEEEE|EEEE|E|K|cccc|ccc|WW|W|G+|z+/gi;
 var standalone = 'stand-alone';
 var weekdayKey = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 export var basicPatterns = ['short', 'medium', 'long', 'full'];
@@ -27,6 +27,7 @@ export var datePartMatcher = {
     's': 'second',
     'L': 'month',
     'a': 'designator',
+    'B': 'designator',
     'z': 'timeZone',
     'Z': 'timeZone',
     'G': 'era',
@@ -55,6 +56,7 @@ var DateFormat = /** @class */ (function () {
         var numObject = getValue('parserObject.numbers', dependable);
         var dateObject = dependable.dateObject;
         var formatOptions = { isIslamic: base.islamicRegex.test(option.calendar) };
+        formatOptions.firstDayOfWeek = base.getWeekData(culture, cldr);
         if (isBlazor() && option.isServerRendered) {
             option = base.compareBlazorDateFormats(option, culture);
         }
@@ -100,6 +102,10 @@ var DateFormat = /** @class */ (function () {
                         }
                         break;
                     case 'a':
+                        formatOptions.designator = isBlazor() ?
+                            getValue('dayPeriods', dateObject) : getValue('dayPeriods.format.wide', dateObject);
+                        break;
+                    case 'B':
                         formatOptions.designator = isBlazor() ?
                             getValue('dayPeriods', dateObject) : getValue('dayPeriods.format.wide', dateObject);
                         break;
@@ -205,6 +211,11 @@ var DateFormat = /** @class */ (function () {
                     ret += options.designator["" + desig];
                     break;
                 }
+                case 'B': {
+                    var desigs = value.getHours() < 12 ? 'am' : 'pm';
+                    ret += options.designator["" + desigs];
+                    break;
+                }
                 case 'G': {
                     var dec = value.getFullYear() < 0 ? 0 : 1;
                     var retu = options.era["" + dec];
@@ -239,7 +250,7 @@ var DateFormat = /** @class */ (function () {
                     break;
                 case 'W':
                     isNumber = true;
-                    curval = base.getWeekOfYear(value);
+                    curval = base.getWeekOfYear(value, options.firstDayOfWeek);
                     break;
                 default:
                     ret += match;
@@ -296,3 +307,4 @@ var DateFormat = /** @class */ (function () {
     return DateFormat;
 }());
 export { DateFormat };
+setDateFormat(DateFormat);

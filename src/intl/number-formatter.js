@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isUndefined, throwError, isNullOrUndefined, extend, isBlazor, getValue } from '../util';
-import { defaultCurrencyCode } from '../internationalization';
-import { IntlBase as base } from './intl-base';
+import { IntlBase as base, setNumberFormat, defaultCurrencyCode } from './intl-base';
 import { ParserBase as parser } from './parser-base';
 var errorText = {
     'ms': 'minimumSignificantDigits',
@@ -234,7 +233,14 @@ var NumberFormat = /** @class */ (function () {
                             break;
                         }
                     }
-                    fValue = temp[0] + '.' + decimalPart;
+                    // removes the dot and trailing zero
+                    var decimalSeparator = (dOptions).numberMapper.numberSymbols[mapper[3]] || '.';
+                    if (decimalPart === '') {
+                        fValue = temp[0];
+                    }
+                    else {
+                        fValue = temp[0] + decimalSeparator + decimalPart;
+                    }
                 }
             }
             if (curData.type === 'scientific') {
@@ -316,7 +322,14 @@ var NumberFormat = /** @class */ (function () {
      * @param {NumberFormatOptions} [option] ?
      * @returns {string} ?
      */
+    NumberFormat.roundTo = function (value, digits) {
+        var factor = Math.pow(10, digits);
+        return (Math.round(value * factor) / factor).toFixed(digits);
+    };
     NumberFormat.processFraction = function (value, min, max, option) {
+        if (value != null && (value.toString().indexOf('e') !== -1 || value.toString().indexOf('E') !== -1)) {
+            return value.toFixed(min);
+        }
         var temp = (value + '').split('.')[1];
         var length = temp ? temp.length : 0;
         if (min && length < min) {
@@ -334,7 +347,7 @@ var NumberFormat = /** @class */ (function () {
             return value.toFixed(min);
         }
         else if (!isNullOrUndefined(max) && (length > max || max === 0)) {
-            return value.toFixed(max);
+            return this.roundTo(value, max);
         }
         var str = value + '';
         if (str[0] === '0' && option && option.format === '###.00') {
@@ -380,3 +393,4 @@ var NumberFormat = /** @class */ (function () {
     return NumberFormat;
 }());
 export { NumberFormat };
+setNumberFormat(NumberFormat);

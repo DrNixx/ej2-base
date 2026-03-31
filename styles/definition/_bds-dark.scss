@@ -1,4 +1,7 @@
-@import '../common/mixin.scss';
+@use 'sass:color';
+@use 'sass:meta';
+@use 'sass:list';
+@use '../common/mixin' as *;
 
 @function mapcolorvariable($pallete-name){
   @return var(#{'--color-sf-'+ $pallete-name});
@@ -15,7 +18,7 @@
   
   //branding
   --color-sf-brand-primary: #{#9d76ed};
-  --color-sf-brand-primary-d10: #{darken(#9d76ed, 5%)};
+  --color-sf-brand-primary-d10: #{color.adjust(#9d76ed, $lightness: -5%)};
   --color-sf-on-brand-solid-primary: #{#fff};
   --color-sf-brand-solid-primary: #{#7e56d8};
 
@@ -369,7 +372,7 @@ $cyan-800: #155b75 !default;
 $cyan-900: #164c63 !default;
 $cyan-950: #0d2d3a !default;
 
-//collection: 1. color modes with mode: dark mode
+//collection: 1.color modes with mode: dark mode
 
 //bds color system
 $base-white: mapcolorvariable('base-white');
@@ -766,6 +769,7 @@ $overlay-bg-color: rgba(0, 0, 0, .7) !default;
 $table-bg-color-hover: $gray-800 !default;
 $table-bg-color-pressed: $gray-700 !default;
 $table-bg-color-selected: $gray-700 !default;
+$table-bg-color-selected-hover: color-mix(in srgb, rgba($gray-700, 1), rgba($gray-800, .2)) !default;
 
 //text-color
 $content-text-color: $text-primary !default;
@@ -869,7 +873,7 @@ $leading-normal: 1.5 !default;
 $leading-relaxed: 1.625 !default;
 $leading-loose: 2 !default;
 
-//font Weight
+//font Weights
 $font-weight-lighter: lighter !default;
 $font-weight-light: 300 !default;
 $font-weight-normal: 400 !default;
@@ -1179,3 +1183,12 @@ $chip-secondary-active-border-color: $fg-senary !default;
 
 $gantt-connected-task-color: $brand-primary-d10 !default;
 $gantt-active-parent-task-color: $brand-primary-d10 !default;
+
+$font-family: 'Inter' !default;
+$font-size: 12px !default;
+$font-weight: normal !default;
+$error-font-color: $danger !default;
+$overlay-bg-color: rgba($cool-gray-500, .75) !default;
+$warning-font-color: $orange-700 !default;
+$success-font-color: $green-700 !default;
+$information-font-color: $cyan-700 !default;

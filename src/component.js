@@ -81,7 +81,7 @@ var Component = /** @class */ (function (_super) {
         _this.localObserver = new Observer(_this);
         onIntlChange.on('notifyExternalChange', _this.detectFunction, _this, _this.randomId);
         // Based on the considered control list we have count the instance
-        if (typeof window !== 'undefined' && typeof document !== 'undefined' && !validateLicense()) {
+        if (typeof window !== 'undefined' && typeof document !== 'undefined' && !validateLicense(_this.getModuleName())) {
             if (componentList.indexOf(_this.getModuleName()) !== -1) {
                 instancecount = instancecount + 1;
                 if (instancecount > 5) {
@@ -130,6 +130,9 @@ var Component = /** @class */ (function (_super) {
         this.moduleLoader.clean();
         this.destroy();
         this.clearChanges();
+        if (this.enablePersistence) {
+            this.attachUnloadEvent();
+        }
         this.localObserver = new Observer(this);
         this.preRender();
         this.injectModules();
@@ -157,6 +160,7 @@ var Component = /** @class */ (function (_super) {
     /**
      * Returns the persistence data for component
      *
+     * @private
      * @returns {any} ?
      */
     Component.prototype.getLocalData = function () {
@@ -171,6 +175,7 @@ var Component = /** @class */ (function (_super) {
     /**
      * Adding unload event to persist data when enable persistence true
      *
+     * @private
      * @returns {void}
      */
     Component.prototype.attachUnloadEvent = function () {
@@ -180,6 +185,7 @@ var Component = /** @class */ (function (_super) {
     /**
      * Handling unload event to persist data when enable persistence true
      *
+     * @private
      * @returns {void}
      */
     Component.prototype.handleUnload = function () {
@@ -188,6 +194,7 @@ var Component = /** @class */ (function (_super) {
     /**
      * Removing unload event to persist data when enable persistence true
      *
+     * @private
      * @returns {void}
      */
     Component.prototype.detachUnloadEvent = function () {
@@ -229,7 +236,7 @@ var Component = /** @class */ (function (_super) {
                 diagram: 'all',
                 PdfViewer: 'all',
                 grid: ['logger'],
-                richtexteditor: ['link', 'table', 'image', 'audio', 'video', 'formatPainter', 'emojiPicker', 'pasteCleanup', 'htmlEditor', 'toolbar', 'importExport'],
+                richtexteditor: ['link', 'table', 'image', 'audio', 'video', 'formatPainter', 'emojiPicker', 'pasteCleanup', 'htmlEditor', 'toolbar', 'importExport', 'codeBlock', 'clipBoardCleanup', 'aiAssistant', 'autoFormat'],
                 treegrid: ['filter'],
                 gantt: ['tooltip'],
                 chart: ['Export', 'Zoom'],
@@ -431,8 +438,10 @@ var Component = /** @class */ (function (_super) {
             callback();
         }
     };
-    Component.prototype.clearTemplate = function (templateName, index) {
-        //No Code
+    Component.prototype.clearTemplate = function (templateName, index, callback) {
+        if (!isNullOrUndefined(callback)) {
+            callback();
+        }
     };
     Component.prototype.getUniqueID = function (definedName) {
         if (this.isHistoryChanged()) {

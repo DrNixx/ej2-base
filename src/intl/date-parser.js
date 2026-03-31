@@ -221,9 +221,14 @@ var DateParser = /** @class */ (function () {
         var tzone = options.timeZone;
         if (!isUndefined(y)) {
             var len = (y + '').length;
-            if (len <= 2) {
+            var typedYearString = options.typedYearString || '';
+            var isPaddedAncientYear = /^0{2,3}\d{1,2}$/.test(typedYearString);
+            if (len <= 2 && !isPaddedAncientYear) {
                 var century = Math.floor(res.getFullYear() / 100) * 100;
                 y += century;
+            }
+            if (isPaddedAncientYear) {
+                return null;
             }
             res.setFullYear(y);
         }
@@ -249,6 +254,29 @@ var DateParser = /** @class */ (function () {
                     if (key === 'day') {
                         var lastDay = new Date(res.getFullYear(), res.getMonth() + 1, 0).getDate();
                         if ((tValue < 1 || tValue > lastDay)) {
+                            return null;
+                        }
+                    }
+                    if (key === 'hour') {
+                        var is12h = options.hour12;
+                        if (is12h) {
+                            if (tValue < 1 || tValue > 12) {
+                                return null;
+                            }
+                        }
+                        else {
+                            if (tValue < 0 || tValue > 23) {
+                                return null;
+                            }
+                        }
+                    }
+                    else if (key === 'minute' || key === 'second') {
+                        if (tValue < 0 || tValue > 59) {
+                            return null;
+                        }
+                    }
+                    else if (key === 'milliseconds') {
+                        if (tValue < 0 || tValue > 999) {
                             return null;
                         }
                     }
@@ -295,6 +323,9 @@ var DateParser = /** @class */ (function () {
                 var matchString = matches[curObject.pos];
                 if (curObject.isNumber) {
                     retOptions["" + prop] = this.internalNumberParser(matchString, num);
+                    if (prop === 'year' && !isNullOrUndefined(matchString)) {
+                        retOptions.typedYearString = matchString.trim();
+                    }
                 }
                 else {
                     if (prop === 'timeZone' && !isUndefined(matchString)) {
@@ -344,6 +375,19 @@ var DateParser = /** @class */ (function () {
         return null;
     };
     /**
+     * Escapes all regex metacharacters in a string, preserving the {0} placeholder.
+     *
+     * @param {string} str ? - The input string to escape.
+     * @returns {string} ? - The escaped string with {0} preserved.
+     */
+    DateParser.escapeRegex = function (str) {
+        var tempPlaceholder = '__TEMP__';
+        var tempStr = str.replace('{0}', tempPlaceholder);
+        var metaChars = /[.*+?^${}()|[\]\\]/g;
+        var escapedStr = tempStr.replace(metaChars, '\\$&');
+        return escapedStr.replace(tempPlaceholder, '{0}');
+    };
+    /**
      * Returns parsed time zone RegExp for provided hour format and time zone
      *
      * @param {string} hourFormat ?
@@ -362,10 +406,12 @@ var DateParser = /** @class */ (function () {
         else {
             ret = ret.replace(/H|m/g, '(' + cRegex + '?)');
         }
+        pattern = this.escapeRegex(pattern);
         var splitStr = (ret.split(';').map(function (str) {
             return pattern.replace('{0}', str);
         }));
-        ret = splitStr.join('|') + '|' + tZone.gmtZeroFormat;
+        var gmtZeroFormat = this.escapeRegex(tZone.gmtZeroFormat);
+        ret = splitStr.join('|') + '|' + gmtZeroFormat;
         return ret;
     };
     /**
